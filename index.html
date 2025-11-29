@@ -2,7 +2,9 @@
 <html lang="ar" dir="rtl" class="transition-colors duration-500">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- تحسين العرض على الموبايل ومنع التكبير -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#F59E0B">
     <title>V-CHAT | تواصل بذكاء</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
@@ -30,6 +32,7 @@
                     animation: {
                         'float': 'float 6s ease-in-out infinite',
                         'slide-up': 'slideUp 0.4s ease-out forwards',
+                        'fade-in': 'fadeIn 0.5s ease-out forwards',
                     },
                     keyframes: {
                         float: {
@@ -39,6 +42,10 @@
                         slideUp: {
                             '0%': { opacity: '0', transform: 'translateY(10px)' },
                             '100%': { opacity: '1', transform: 'translateY(0)' },
+                        },
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
                         }
                     }
                 }
@@ -50,30 +57,43 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
+        /* استخدام dvh لضمان ملء الشاشة بشكل صحيح على الموبايل */
         body {
             font-family: 'Cairo', sans-serif;
             background: linear-gradient(135deg, #FFFBEB 0%, #FEF3C7 50%, #FDE68A 100%);
             background-attachment: fixed;
+            height: 100dvh; 
+            overflow: hidden; /* منع تمرير الصفحة بالكامل */
+            -webkit-tap-highlight-color: transparent;
         }
         
         .dark body {
             background: linear-gradient(135deg, #09090b 0%, #000000 100%);
         }
 
-        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar { width: 4px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 20px; }
         .dark ::-webkit-scrollbar-thumb { background: #3f3f46; }
 
         .glass-panel {
-            background: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.90);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.6);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
         }
         .dark .glass-panel {
-            background: rgba(24, 24, 27, 0.85);
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            background: rgba(24, 24, 27, 0.90);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        @media (min-width: 768px) {
+            .glass-panel {
+                border: 1px solid rgba(255, 255, 255, 0.6);
+            }
+            .dark .glass-panel {
+                border: 1px solid rgba(255, 255, 255, 0.05);
+            }
         }
 
         .bg-pattern {
@@ -83,81 +103,175 @@
         .dark .bg-pattern {
             background-image: radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px);
         }
+        
+        select {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+        }
     </style>
 </head>
-<body class="h-screen w-full flex items-center justify-center p-0 md:p-4 lg:p-8 transition-colors duration-500 overflow-hidden">
+<body class="h-[100dvh] w-full flex items-center justify-center p-0 md:p-4 lg:p-8 transition-colors duration-500 overflow-hidden relative">
 
     <div class="fixed inset-0 bg-pattern opacity-50 pointer-events-none"></div>
 
-    <div class="w-full h-full md:max-w-[1400px] md:h-[92vh] bg-white/90 dark:bg-darkCard/95 md:rounded-[2.5rem] shadow-2xl flex overflow-hidden relative transition-all duration-300 border border-white/60 dark:border-white/5 backdrop-blur-xl">
+    <!-- =========================== -->
+    <!-- شاشة المصادقة (Auth Screen) -->
+    <!-- =========================== -->
+    <div id="auth-screen" class="hidden w-full h-full md:max-w-md md:h-auto p-0 md:p-6 relative z-50 animate-fade-in flex flex-col justify-center">
+        <!-- جعل الكارد يملأ الشاشة في الموبايل -->
+        <div class="w-full h-full md:h-auto glass-panel p-8 md:rounded-[2.5rem] shadow-none md:shadow-2xl relative overflow-y-auto flex flex-col justify-center">
+            
+            <div class="absolute -top-10 -right-10 w-32 h-32 bg-primary/20 rounded-full blur-2xl"></div>
+            <div class="absolute -bottom-10 -left-10 w-32 h-32 bg-primaryDark/20 rounded-full blur-2xl"></div>
+
+            <div class="text-center mb-8 relative mt-10 md:mt-0">
+                <div class="w-20 h-20 bg-gradient-to-br from-primaryLight to-primary rounded-3xl mx-auto flex items-center justify-center text-white shadow-glow mb-4 transform rotate-3 hover:rotate-6 transition-transform">
+                    <i class="fas fa-bolt text-4xl"></i>
+                </div>
+                <h1 class="text-3xl font-black text-gray-800 dark:text-white mb-2">V-CHAT</h1>
+                <p id="auth-subtitle" class="text-gray-500 dark:text-gray-400 font-medium">أنشئ حسابك برقم الهاتف</p>
+            </div>
+
+            <form id="auth-form" onsubmit="handleAuth(event)" class="space-y-5 relative max-w-sm mx-auto w-full">
+                
+                <div id="name-field" class="relative group">
+                    <i class="fas fa-user absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-primary transition-colors"></i>
+                    <input type="text" id="input-name" placeholder="الاسم الكامل" class="w-full bg-gray-50 dark:bg-darkSurface text-gray-800 dark:text-white py-4 pr-12 pl-4 rounded-2xl outline-none border border-transparent focus:border-primary/50 transition-all font-semibold shadow-sm">
+                </div>
+
+                <div class="flex gap-2">
+                    <div class="relative w-1/3 min-w-[100px]">
+                        <select id="country-code" class="w-full h-full bg-gray-50 dark:bg-darkSurface text-gray-800 dark:text-white py-4 px-2 rounded-2xl outline-none border border-transparent focus:border-primary/50 transition-all font-semibold text-center cursor-pointer shadow-sm">
+                            <option value="+20">🇪🇬 +20</option>
+                            <option value="+966">🇸🇦 +966</option>
+                            <option value="+971">🇦🇪 +971</option>
+                            <option value="+965">🇰🇼 +965</option>
+                            <option value="+974">🇶🇦 +974</option>
+                            <option value="+968">🇴🇲 +968</option>
+                            <option value="+973">🇧🇭 +973</option>
+                            <option value="+962">🇯🇴 +962</option>
+                            <option value="+964">🇮🇶 +964</option>
+                            <option value="+961">🇱🇧 +961</option>
+                            <option value="+212">🇲🇦 +212</option>
+                            <option value="+213">🇩🇿 +213</option>
+                            <option value="+216">🇹🇳 +216</option>
+                        </select>
+                        <i class="fas fa-chevron-down absolute left-2 top-1/2 -translate-y-1/2 text-[10px] text-gray-400 pointer-events-none"></i>
+                    </div>
+
+                    <div class="relative group flex-1">
+                        <i class="fas fa-phone absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-primary transition-colors"></i>
+                        <input type="tel" id="input-phone" required placeholder="رقم الموبايل" class="w-full bg-gray-50 dark:bg-darkSurface text-gray-800 dark:text-white py-4 pr-12 pl-4 rounded-2xl outline-none border border-transparent focus:border-primary/50 transition-all font-semibold shadow-sm" pattern="[0-9]*" inputmode="numeric">
+                    </div>
+                </div>
+
+                <div class="relative group">
+                    <i class="fas fa-lock absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-primary transition-colors"></i>
+                    <input type="password" id="input-password" required placeholder="كلمة المرور" class="w-full bg-gray-50 dark:bg-darkSurface text-gray-800 dark:text-white py-4 pr-12 pl-4 rounded-2xl outline-none border border-transparent focus:border-primary/50 transition-all font-semibold shadow-sm">
+                </div>
+
+                <div id="auth-error" class="text-red-500 text-sm text-center font-bold hidden bg-red-100 dark:bg-red-900/20 p-2 rounded-xl"></div>
+
+                <button type="submit" id="auth-btn" class="w-full py-4 bg-gradient-to-r from-primary to-primaryHover text-white font-bold rounded-2xl shadow-lg shadow-primary/30 hover:shadow-glow transform hover:scale-[1.02] transition-all flex items-center justify-center gap-2 active:scale-95">
+                    <span id="btn-text">إنشاء حساب</span>
+                    <i class="fas fa-arrow-left"></i>
+                    <i id="btn-loader" class="fas fa-circle-notch fa-spin hidden"></i>
+                </button>
+            </form>
+
+            <div class="mt-6 text-center pb-8 md:pb-0">
+                <p class="text-gray-500 dark:text-gray-400 text-sm font-medium">
+                    <span id="switch-text">لديك حساب بالفعل؟</span>
+                    <button onclick="toggleAuthMode()" class="text-primary hover:text-primaryDark font-bold underline decoration-2 underline-offset-4 transition-colors p-2">
+                        <span id="switch-btn-text">تسجيل الدخول</span>
+                    </button>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- =========================== -->
+    <!-- واجهة التطبيق الرئيسية (Main App) -->
+    <!-- =========================== -->
+    <!-- تعديل الحاوية لتملأ الشاشة تماماً على الموبايل بدون حواف -->
+    <div id="app-screen" class="hidden w-full h-full md:max-w-[1400px] md:h-[92vh] bg-white/95 dark:bg-darkCard/95 md:rounded-[2.5rem] shadow-none md:shadow-2xl flex overflow-hidden relative transition-all duration-300 border-none md:border border-white/60 dark:border-white/5 backdrop-blur-xl animate-fade-in">
         
         <!-- القائمة الجانبية -->
-        <aside class="w-full md:w-[400px] flex flex-col border-l border-gray-100 dark:border-gray-800 bg-white/50 dark:bg-darkCard/50 backdrop-blur-md transition-all z-20" id="sidebar">
+        <aside class="w-full md:w-[400px] flex flex-col border-l-0 md:border-l border-gray-100 dark:border-gray-800 bg-white/50 dark:bg-darkCard/50 backdrop-blur-md transition-all z-20 h-full absolute md:relative inset-0" id="sidebar">
             
-            <header class="p-6 pb-2">
-                <div class="flex justify-between items-center mb-8">
+            <header class="p-4 md:p-6 pb-2 pt-safe-top"> <!-- pt-safe-top for notches -->
+                <div class="flex justify-between items-center mb-6">
                     <div class="flex items-center gap-3">
-                        <div class="w-11 h-11 bg-gradient-to-br from-primaryLight to-primary rounded-2xl flex items-center justify-center text-white shadow-glow transform hover:scale-105 transition-transform duration-300">
-                            <i class="fas fa-bolt text-xl"></i>
+                        <div class="w-10 h-10 md:w-11 md:h-11 bg-gradient-to-br from-primaryLight to-primary rounded-2xl flex items-center justify-center text-white shadow-glow">
+                            <i class="fas fa-bolt text-lg md:text-xl"></i>
                         </div>
-                        <h1 class="text-2xl font-black tracking-wide text-gray-800 dark:text-white">V-CHAT</h1>
+                        <h1 class="text-xl md:text-2xl font-black tracking-wide text-gray-800 dark:text-white">V-CHAT</h1>
                     </div>
                     
-                    <button onclick="toggleDarkMode()" class="w-11 h-11 rounded-full bg-gray-50 dark:bg-white/5 hover:bg-yellow-50 dark:hover:bg-white/10 flex items-center justify-center transition-all text-gray-500 dark:text-gray-300 shadow-sm hover:shadow-md">
-                        <i class="fas fa-moon dark:hidden text-lg"></i>
-                        <i class="fas fa-sun hidden dark:block text-primary text-lg"></i>
-                    </button>
+                    <div class="flex gap-2">
+                        <button onclick="toggleDarkMode()" class="w-10 h-10 md:w-11 md:h-11 rounded-full bg-gray-50 dark:bg-white/5 hover:bg-yellow-50 dark:hover:bg-white/10 flex items-center justify-center transition-all text-gray-500 dark:text-gray-300 shadow-sm active:bg-gray-200">
+                            <i class="fas fa-moon dark:hidden text-lg"></i>
+                            <i class="fas fa-sun hidden dark:block text-primary text-lg"></i>
+                        </button>
+                        <button onclick="logout()" class="w-10 h-10 md:w-11 md:h-11 rounded-full bg-red-50 dark:bg-red-900/10 hover:bg-red-100 dark:hover:bg-red-900/20 flex items-center justify-center transition-all text-red-500 shadow-sm active:bg-red-100" title="تسجيل الخروج">
+                            <i class="fas fa-sign-out-alt text-lg"></i>
+                        </button>
+                    </div>
                 </div>
 
-                <div class="relative group mb-6">
+                <div class="relative group mb-4 md:mb-6">
                     <i class="fas fa-search absolute right-5 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-primary transition-colors duration-300"></i>
-                    <input type="text" placeholder="بحث في المحادثات..." class="w-full bg-gray-100/80 dark:bg-black/20 text-gray-700 dark:text-gray-200 py-4 pr-12 pl-4 rounded-2xl outline-none border border-transparent focus:border-primary/30 focus:bg-white dark:focus:bg-black/40 transition-all placeholder-gray-400 text-sm font-semibold shadow-inner">
+                    <input type="text" placeholder="بحث في المحادثات..." class="w-full bg-gray-100/80 dark:bg-black/20 text-gray-700 dark:text-gray-200 py-3 md:py-4 pr-12 pl-4 rounded-2xl outline-none border border-transparent focus:border-primary/30 focus:bg-white dark:focus:bg-black/40 transition-all placeholder-gray-400 text-sm font-semibold shadow-inner">
                 </div>
 
-                <div class="flex gap-5 overflow-x-auto pb-6 no-scrollbar px-1">
-                    <div class="flex flex-col items-center gap-2 cursor-pointer group min-w-[68px]">
-                        <div class="w-[68px] h-[68px] rounded-full border-2 border-dashed border-gray-300 dark:border-gray-600 group-hover:border-primary p-1 transition-colors">
+                <div class="flex gap-4 md:gap-5 overflow-x-auto pb-4 md:pb-6 no-scrollbar px-1">
+                    <div class="flex flex-col items-center gap-2 cursor-pointer group min-w-[60px] md:min-w-[68px]">
+                        <div class="w-[60px] h-[60px] md:w-[68px] md:h-[68px] rounded-full border-2 border-dashed border-gray-300 dark:border-gray-600 group-hover:border-primary p-1 transition-colors">
                             <div class="w-full h-full bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center group-hover:bg-yellow-50 dark:group-hover:bg-white/5 transition-colors">
                                 <i class="fas fa-plus text-xl text-gray-400 group-hover:text-primary transition-colors"></i>
                             </div>
                         </div>
-                        <span class="text-xs font-bold text-gray-500 dark:text-gray-400">قصتي</span>
+                        <span class="text-[10px] md:text-xs font-bold text-gray-500 dark:text-gray-400">قصتي</span>
                     </div>
-                    <div class="flex flex-col items-center gap-2 cursor-pointer group min-w-[68px]">
-                        <div class="w-[68px] h-[68px] rounded-full bg-gradient-to-tr from-primary to-primaryLight p-[2px] shadow-lg shadow-primary/20 transform group-hover:scale-105 transition-transform">
+                    <!-- Stories placeholders -->
+                    <div class="flex flex-col items-center gap-2 cursor-pointer group min-w-[60px] md:min-w-[68px]">
+                        <div class="w-[60px] h-[60px] md:w-[68px] md:h-[68px] rounded-full bg-gradient-to-tr from-primary to-primaryLight p-[2px] shadow-lg shadow-primary/20">
                             <div class="w-full h-full rounded-full border-2 border-white dark:border-darkCard overflow-hidden">
                                 <img src="https://ui-avatars.com/api/?name=Sara&background=fbbf24&color=fff" class="w-full h-full object-cover">
                             </div>
                         </div>
-                        <span class="text-xs font-bold text-gray-600 dark:text-gray-300">سارة</span>
+                        <span class="text-[10px] md:text-xs font-bold text-gray-600 dark:text-gray-300">سارة</span>
                     </div>
-                    <div class="flex flex-col items-center gap-2 cursor-pointer group min-w-[68px]">
-                        <div class="w-[68px] h-[68px] rounded-full border-2 border-gray-200 dark:border-gray-700 p-[2px] group-hover:border-primary/50 transition-colors">
+                    <div class="flex flex-col items-center gap-2 cursor-pointer group min-w-[60px] md:min-w-[68px]">
+                        <div class="w-[60px] h-[60px] md:w-[68px] md:h-[68px] rounded-full border-2 border-gray-200 dark:border-gray-700 p-[2px]">
                             <div class="w-full h-full rounded-full border-2 border-white dark:border-darkCard overflow-hidden">
-                                <img src="https://ui-avatars.com/api/?name=Ali&background=random" class="w-full h-full object-cover filter grayscale group-hover:grayscale-0 transition-all duration-500">
+                                <img src="https://ui-avatars.com/api/?name=Ali&background=random" class="w-full h-full object-cover filter grayscale">
                             </div>
                         </div>
-                        <span class="text-xs font-bold text-gray-600 dark:text-gray-300">علي</span>
+                        <span class="text-[10px] md:text-xs font-bold text-gray-600 dark:text-gray-300">علي</span>
                     </div>
                 </div>
             </header>
 
             <div class="px-6 py-2 flex justify-between items-center">
-                <h2 class="text-sm font-extrabold text-gray-400 dark:text-gray-500 tracking-wider uppercase">الرسائل</h2>
+                <h2 class="text-xs md:text-sm font-extrabold text-gray-400 dark:text-gray-500 tracking-wider uppercase">الرسائل</h2>
                 <button class="w-8 h-8 rounded-full bg-gray-50 dark:bg-white/5 hover:bg-primary/10 hover:text-primary flex items-center justify-center transition-all text-gray-400">
                     <i class="fas fa-sort-amount-down"></i>
                 </button>
             </div>
 
-            <ul class="flex-1 overflow-y-auto px-4 space-y-3 pb-4" id="contacts-list">
+            <ul class="flex-1 overflow-y-auto px-4 space-y-2 md:space-y-3 pb-20 md:pb-4" id="contacts-list">
                 <!-- Contacts List -->
             </ul>
         </aside>
 
         <!-- منطقة المحادثة -->
-        <main class="hidden md:flex flex-1 flex-col relative bg-white/40 dark:bg-black/20 backdrop-blur-sm transition-colors" id="chat-area">
+        <!-- استخدام absolute على الموبايل لتغطية القائمة بالكامل عند الفتح -->
+        <main class="hidden md:flex flex-1 flex-col relative bg-white/40 dark:bg-black/20 backdrop-blur-sm transition-colors absolute md:relative inset-0 z-30" id="chat-area">
             
-            <div id="welcome-screen" class="hidden h-full flex flex-col items-center justify-center text-center p-8 relative overflow-hidden">
+            <!-- شاشة الترحيب (تظهر فقط على الديسك توب) -->
+            <div id="welcome-screen" class="hidden md:flex h-full flex-col items-center justify-center text-center p-8 relative overflow-hidden">
                 <div class="absolute inset-0 bg-pattern opacity-30"></div>
                 <div class="w-56 h-56 bg-gradient-to-br from-yellow-100 to-white dark:from-white/5 dark:to-transparent rounded-full flex items-center justify-center mb-10 relative shadow-2xl animate-float">
                     <div class="absolute inset-0 border border-white/50 rounded-full blur-sm"></div>
@@ -165,63 +279,60 @@
                 </div>
                 <h2 class="text-4xl font-black text-gray-800 dark:text-white mb-4 tracking-tight">ابدأ المحادثة الآن</h2>
                 <p class="text-gray-500 dark:text-gray-400 max-w-md leading-relaxed text-lg font-medium">مساحة خاصة لتواصل أسرع وأكثر ذكاءً. اختر صديقاً وابدأ رحلة الحديث.</p>
-                <button onclick="if(window.innerWidth < 768) document.getElementById('sidebar').classList.remove('hidden')" class="mt-10 px-10 py-4 bg-gradient-to-r from-primary to-primaryHover text-white font-bold rounded-2xl shadow-glow hover:shadow-lg hover:scale-105 transition-all duration-300 md:hidden">
-                    قائمة المحادثات
-                </button>
             </div>
 
-            <div id="active-chat-container" class="flex flex-col h-full w-full relative">
-                <header class="glass-panel h-24 px-8 flex justify-between items-center z-10 sticky top-0 shadow-sm/50">
-                    <div class="flex items-center gap-5">
-                        <button onclick="backToMenu()" class="md:hidden w-10 h-10 flex items-center justify-center rounded-xl bg-gray-50 dark:bg-white/5 text-gray-600 dark:text-gray-300 transition-colors">
+            <div id="active-chat-container" class="flex flex-col h-full w-full relative bg-white dark:bg-darkBg md:bg-transparent">
+                <header class="glass-panel h-20 md:h-24 px-4 md:px-8 flex justify-between items-center z-10 sticky top-0 shadow-sm/50 pt-safe-top">
+                    <div class="flex items-center gap-3 md:gap-5">
+                        <button onclick="backToMenu()" class="md:hidden w-10 h-10 flex items-center justify-center rounded-xl bg-gray-50 dark:bg-white/5 text-gray-600 dark:text-gray-300 transition-colors active:bg-gray-200">
                             <i class="fas fa-arrow-right text-lg"></i>
                         </button>
                         <div class="relative cursor-pointer group">
                             <div class="absolute -inset-0.5 bg-gradient-to-r from-primary to-primaryLight rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur"></div>
-                            <img id="header-img" src="" class="relative w-14 h-14 rounded-2xl object-cover shadow-md border-2 border-white dark:border-darkCard">
-                            <span class="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 border-2 border-white dark:border-darkCard rounded-full shadow-sm z-10"></span>
+                            <img id="header-img" src="" class="relative w-10 h-10 md:w-14 md:h-14 rounded-xl md:rounded-2xl object-cover shadow-md border-2 border-white dark:border-darkCard">
+                            <span class="absolute -bottom-1 -right-1 w-3 h-3 md:w-4 md:h-4 bg-green-500 border-2 border-white dark:border-darkCard rounded-full shadow-sm z-10"></span>
                         </div>
                         <div>
-                            <h3 id="header-name" class="font-bold text-gray-900 dark:text-white text-xl leading-tight mb-1"></h3>
-                            <div class="flex items-center gap-2">
-                                <span class="flex h-2 w-2 relative">
+                            <h3 id="header-name" class="font-bold text-gray-900 dark:text-white text-base md:text-xl leading-tight mb-0.5 md:mb-1"></h3>
+                            <div class="flex items-center gap-1.5 md:gap-2">
+                                <span class="flex h-1.5 w-1.5 md:h-2 md:w-2 relative">
                                     <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                                    <span class="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                                    <span class="relative inline-flex rounded-full h-full w-full bg-green-500"></span>
                                 </span>
-                                <span class="text-xs text-gray-500 dark:text-gray-400 font-semibold tracking-wide">نشط الآن</span>
+                                <span class="text-[10px] md:text-xs text-gray-500 dark:text-gray-400 font-semibold tracking-wide">نشط الآن</span>
                             </div>
                         </div>
                     </div>
-                    <div class="flex gap-3">
-                        <button class="w-12 h-12 rounded-2xl bg-gray-50 dark:bg-white/5 hover:bg-primary/10 hover:text-primary dark:hover:text-primary text-gray-400 transition-all flex items-center justify-center group">
-                            <i class="fas fa-phone transform group-hover:rotate-12 transition-transform"></i>
+                    <div class="flex gap-2 md:gap-3">
+                        <button class="w-10 h-10 md:w-12 md:h-12 rounded-xl md:rounded-2xl bg-gray-50 dark:bg-white/5 hover:bg-primary/10 hover:text-primary dark:hover:text-primary text-gray-400 transition-all flex items-center justify-center">
+                            <i class="fas fa-phone"></i>
                         </button>
-                        <button class="w-12 h-12 rounded-2xl bg-gray-50 dark:bg-white/5 hover:bg-primary/10 hover:text-primary dark:hover:text-primary text-gray-400 transition-all flex items-center justify-center group">
-                            <i class="fas fa-video transform group-hover:scale-110 transition-transform"></i>
+                        <button class="w-10 h-10 md:w-12 md:h-12 rounded-xl md:rounded-2xl bg-gray-50 dark:bg-white/5 hover:bg-primary/10 hover:text-primary dark:hover:text-primary text-gray-400 transition-all flex items-center justify-center">
+                            <i class="fas fa-video"></i>
                         </button>
-                        <button class="w-12 h-12 rounded-2xl bg-gray-50 dark:bg-white/5 hover:bg-primary/10 hover:text-primary dark:hover:text-primary text-gray-400 transition-all flex items-center justify-center">
+                        <button class="hidden md:flex w-12 h-12 rounded-2xl bg-gray-50 dark:bg-white/5 hover:bg-primary/10 hover:text-primary dark:hover:text-primary text-gray-400 transition-all items-center justify-center">
                             <i class="fas fa-ellipsis-v"></i>
                         </button>
                     </div>
                 </header>
 
-                <div id="messages-box" class="flex-1 overflow-y-auto p-6 md:p-8 space-y-6 scroll-smooth">
+                <div id="messages-box" class="flex-1 overflow-y-auto p-4 md:p-8 space-y-4 md:space-y-6 scroll-smooth pb-4">
                     <!-- Messages will be loaded here -->
                 </div>
 
-                <div class="p-6 md:p-8 pt-0 relative z-20">
-                    <div class="glass-panel p-2 rounded-[2rem] flex items-end gap-3 shadow-soft transition-all focus-within:ring-2 focus-within:ring-primary/20 focus-within:shadow-glow">
-                        <button class="w-12 h-12 mb-0.5 text-gray-400 hover:text-primary transition-colors rounded-full hover:bg-gray-100 dark:hover:bg-white/10 flex items-center justify-center flex-shrink-0">
-                            <i class="far fa-smile text-2xl"></i>
+                <div class="p-3 md:p-8 pt-0 relative z-20 pb-safe-bottom">
+                    <div class="glass-panel p-2 rounded-[1.5rem] md:rounded-[2rem] flex items-end gap-2 md:gap-3 shadow-soft transition-all focus-within:ring-2 focus-within:ring-primary/20 focus-within:shadow-glow">
+                        <button class="w-10 h-10 md:w-12 md:h-12 mb-0.5 text-gray-400 hover:text-primary transition-colors rounded-full hover:bg-gray-100 dark:hover:bg-white/10 flex items-center justify-center flex-shrink-0">
+                            <i class="far fa-smile text-xl md:text-2xl"></i>
                         </button>
-                        <button class="w-12 h-12 mb-0.5 text-gray-400 hover:text-primary transition-colors rounded-full hover:bg-gray-100 dark:hover:bg-white/10 flex items-center justify-center flex-shrink-0">
-                            <i class="fas fa-plus text-xl"></i>
+                        <button class="w-10 h-10 md:w-12 md:h-12 mb-0.5 text-gray-400 hover:text-primary transition-colors rounded-full hover:bg-gray-100 dark:hover:bg-white/10 flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-plus text-lg md:text-xl"></i>
                         </button>
-                        <div class="flex-1 py-3">
-                            <textarea id="message-input" rows="1" class="w-full bg-transparent outline-none text-gray-700 dark:text-white resize-none max-h-32 overflow-y-auto placeholder-gray-400 text-base font-medium leading-relaxed" placeholder="اكتب رسالتك هنا..."></textarea>
+                        <div class="flex-1 py-2 md:py-3">
+                            <textarea id="message-input" rows="1" class="w-full bg-transparent outline-none text-gray-700 dark:text-white resize-none max-h-32 overflow-y-auto placeholder-gray-400 text-sm md:text-base font-medium leading-relaxed" placeholder="اكتب رسالتك هنا..."></textarea>
                         </div>
-                        <button onclick="sendMessage()" class="w-12 h-12 mb-0.5 bg-gradient-to-r from-primary to-primaryHover text-white rounded-full shadow-lg shadow-primary/30 transform hover:scale-110 active:scale-95 transition-all flex items-center justify-center flex-shrink-0">
-                            <i class="fas fa-paper-plane text-lg ml-0.5"></i>
+                        <button onclick="sendMessage()" class="w-10 h-10 md:w-12 md:h-12 mb-0.5 bg-gradient-to-r from-primary to-primaryHover text-white rounded-full shadow-lg shadow-primary/30 transform active:scale-90 transition-all flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-paper-plane text-base md:text-lg ml-0.5"></i>
                         </button>
                     </div>
                 </div>
@@ -234,7 +345,7 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
         import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-analytics.js";
         import { getFirestore, collection, addDoc, query, where, orderBy, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
-        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+        import { getAuth, signInWithCustomToken, signInAnonymously, onAuthStateChanged, updateProfile, signOut } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
 
         // --- تهيئة Firebase ---
         const firebaseConfig = JSON.parse(__firebase_config);
@@ -248,43 +359,164 @@
         let currentUser = null;
         let activeChatId = null;
         let unsubscribeMessages = null;
-        let isFirstLoad = true;
+        let isAuthModeLogin = false; // false = signup, true = login
+        let isAppReady = false; 
 
-        // --- المصادقة والبدء ---
-        const initAuth = async () => {
+        // --- إدارة المصادقة الأساسية (System Auth) ---
+        const initSystemAuth = async () => {
             try {
                 if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
                     await signInWithCustomToken(auth, __initial_auth_token);
                 } else {
                     await signInAnonymously(auth);
                 }
-                console.log("تم بدء المصادقة...");
+                console.log("System Auth Connected");
             } catch (error) {
-                console.error("خطأ في تسجيل الدخول:", error);
+                console.error("System Auth Error:", error);
             }
         };
-        initAuth();
 
-        // مراقبة حالة التسجيل (نقطة الانطلاق الحقيقية للتطبيق)
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                currentUser = user;
-                console.log("تم تأكيد تسجيل الدخول:", user.uid);
+        // --- واجهة المستخدم للمصادقة (User UI Auth) ---
+        window.toggleAuthMode = function() {
+            isAuthModeLogin = !isAuthModeLogin;
+            const nameField = document.getElementById('name-field');
+            const authTitle = document.getElementById('auth-subtitle');
+            const btnText = document.getElementById('btn-text');
+            const switchText = document.getElementById('switch-text');
+            const switchBtnText = document.getElementById('switch-btn-text');
+
+            if (isAuthModeLogin) {
+                nameField.classList.add('hidden');
+                authTitle.innerText = 'أهلاً بك مجدداً، سجل دخولك';
+                btnText.innerText = 'تسجيل الدخول';
+                switchText.innerText = 'ليس لديك حساب؟';
+                switchBtnText.innerText = 'إنشاء حساب جديد';
+            } else {
+                nameField.classList.remove('hidden');
+                authTitle.innerText = 'أنشئ حسابك برقم الهاتف';
+                btnText.innerText = 'إنشاء حساب';
+                switchText.innerText = 'لديك حساب بالفعل؟';
+                switchBtnText.innerText = 'تسجيل الدخول';
+            }
+        }
+
+        window.handleAuth = async function(e) {
+            e.preventDefault();
+            const name = document.getElementById('input-name').value;
+            const countryCode = document.getElementById('country-code').value;
+            const phoneNumber = document.getElementById('input-phone').value;
+            const fullPhone = countryCode + phoneNumber;
+            
+            const errorDiv = document.getElementById('auth-error');
+            const loader = document.getElementById('btn-loader');
+            const btn = document.getElementById('auth-btn');
+
+            errorDiv.classList.add('hidden');
+            loader.classList.remove('hidden');
+            btn.disabled = true;
+
+            try {
+                // التأكد من أن الاتصال الأساسي موجود
+                if (!auth.currentUser) {
+                    await initSystemAuth();
+                }
+
+                if(!phoneNumber || phoneNumber.length < 5) {
+                    throw new Error("يرجى إدخال رقم هاتف صحيح");
+                }
+
+                if (isAuthModeLogin) {
+                    // محاكاة تسجيل الدخول
+                    localStorage.setItem('vchat_logged_in', 'true');
+                    localStorage.setItem('vchat_user_phone', fullPhone);
+                } else {
+                    // إنشاء حساب
+                    if (!name) throw new Error("يرجى إدخال الاسم");
+                    await updateProfile(auth.currentUser, {
+                        displayName: name
+                    });
+                    localStorage.setItem('vchat_logged_in', 'true');
+                    localStorage.setItem('vchat_user_phone', fullPhone);
+                }
                 
-                // تشغيل التطبيق فقط بعد التأكد من هوية المستخدم
-                if (isFirstLoad) {
+                // تحديث الواجهة
+                updateUIState(auth.currentUser);
+
+            } catch (error) {
+                console.error(error);
+                errorDiv.innerText = error.message || "حدث خطأ، يرجى المحاولة مرة أخرى.";
+                errorDiv.classList.remove('hidden');
+            } finally {
+                loader.classList.add('hidden');
+                btn.disabled = false;
+            }
+        }
+
+        window.logout = function() {
+            localStorage.removeItem('vchat_logged_in');
+            updateUIState(auth.currentUser);
+        }
+
+        function updateUIState(user) {
+            const authScreen = document.getElementById('auth-screen');
+            const appScreen = document.getElementById('app-screen');
+            const isLoggedIn = localStorage.getItem('vchat_logged_in') === 'true';
+
+            if (user && isLoggedIn) {
+                currentUser = user;
+                authScreen.classList.add('hidden');
+                appScreen.classList.remove('hidden');
+                appScreen.classList.add('flex');
+                
+                if (!isAppReady) {
                     renderContacts();
                     if(window.innerWidth > 768) {
                        window.openChat(contacts[0].id);
                     }
-                    isFirstLoad = false;
+                    isAppReady = true;
                 }
             } else {
-                console.log("لا يوجد مستخدم مسجل حالياً");
+                currentUser = null;
+                authScreen.classList.remove('hidden');
+                appScreen.classList.add('hidden');
+                appScreen.classList.remove('flex');
+            }
+        }
+
+        // --- تهيئة التطبيق ---
+        document.addEventListener('DOMContentLoaded', () => {
+            initSystemAuth(); 
+
+            if (localStorage.getItem('vchat_theme') === 'dark' || (!('vchat_theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark');
+            }
+            
+            const input = document.getElementById('message-input');
+            input.addEventListener('keypress', function (e) {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    window.sendMessage();
+                }
+            });
+            input.addEventListener('input', function() {
+                this.style.height = 'auto';
+                this.style.height = (this.scrollHeight) + 'px';
+                if(this.value === '') this.style.height = 'auto';
+            });
+        });
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                console.log("System User ID:", user.uid);
+                updateUIState(user);
+            } else {
+                console.log("System User Disconnected");
+                initSystemAuth();
             }
         });
 
-        // --- بيانات وهمية للواجهة ---
+        // --- الدوال والبيانات ---
+        
         const contacts = [
             {
                 id: "chat_001",
@@ -312,37 +544,11 @@
             }
         ];
 
-        // --- الدوال الرئيسية ---
-
         window.toggleDarkMode = function() {
             document.documentElement.classList.toggle('dark');
             const isDark = document.documentElement.classList.contains('dark');
             localStorage.setItem('vchat_theme', isDark ? 'dark' : 'light');
         }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            if (localStorage.getItem('vchat_theme') === 'dark' || (!('vchat_theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-                document.documentElement.classList.add('dark');
-            }
-            
-            // إعداد مستمعات الأحداث
-            const input = document.getElementById('message-input');
-            input.addEventListener('keypress', function (e) {
-                if (e.key === 'Enter' && !e.shiftKey) {
-                    e.preventDefault();
-                    window.sendMessage();
-                }
-            });
-
-            input.addEventListener('input', function() {
-                this.style.height = 'auto';
-                this.style.height = (this.scrollHeight) + 'px';
-                if(this.value === '') this.style.height = 'auto';
-            });
-            
-            // ملاحظة: تم إزالة استدعاء openChat من هنا ونقله لداخل onAuthStateChanged
-            // لتجنب أخطاء الصلاحيات
-        });
 
         function renderContacts() {
             const list = document.getElementById('contacts-list');
@@ -377,19 +583,18 @@
         }
 
         window.openChat = function(id) {
-            // حماية إضافية: لا تقم بأي شيء إذا لم يكن المستخدم مسجلاً
-            if (!currentUser) {
-                console.log("جاري انتظار المصادقة...");
-                return;
-            }
-
             activeChatId = id;
             const contact = contacts.find(c => c.id === id);
             
+            // فتح الشات على الموبايل
             if (window.innerWidth < 768) {
-                document.getElementById('sidebar').classList.add('hidden');
-                document.getElementById('chat-area').classList.remove('hidden');
-                document.getElementById('chat-area').classList.add('flex');
+                const sidebar = document.getElementById('sidebar');
+                const chatArea = document.getElementById('chat-area');
+                
+                // إضافة أنيميشن بسيط
+                sidebar.classList.add('hidden');
+                chatArea.classList.remove('hidden');
+                chatArea.classList.add('flex');
             }
 
             document.getElementById('header-img').src = contact.avatar;
@@ -420,7 +625,7 @@
 
                 box.innerHTML += `
                     <div class="flex justify-center mb-8">
-                        <span class="bg-white/60 dark:bg-white/5 backdrop-blur-md text-gray-500 dark:text-gray-400 text-xs font-bold px-5 py-2 rounded-full shadow-sm border border-white/50 dark:border-white/5">اليوم</span>
+                        <span class="bg-white/60 dark:bg-white/5 backdrop-blur-md text-gray-500 dark:text-gray-400 text-[10px] md:text-xs font-bold px-4 py-1.5 md:px-5 md:py-2 rounded-full shadow-sm border border-white/50 dark:border-white/5">اليوم</span>
                     </div>
                 `;
 
@@ -445,31 +650,25 @@
                 box.scrollTop = box.scrollHeight;
             }, (error) => {
                 console.error("Error fetching messages: ", error);
-                if (error.code === 'permission-denied') {
-                    box.innerHTML = '<div class="text-center text-red-400 mt-10">جاري تأكيد الصلاحيات...</div>';
-                    // إعادة المحاولة تلقائياً بعد ثانية إذا كانت المشكلة تأخير في الشبكة
-                    setTimeout(() => window.openChat(id), 1000);
-                } else {
-                    box.innerHTML = '<div class="text-center text-red-400 mt-10">حدث خطأ في الاتصال.</div>';
-                }
+                box.innerHTML = '<div class="text-center text-red-400 mt-10">حدث خطأ في الاتصال أو الصلاحيات.</div>';
             });
         }
 
         function renderSingleMessage(container, text, time, isOut) {
             const div = document.createElement('div');
-            div.className = `flex mb-6 w-full animate-slide-up ${isOut ? 'justify-end' : 'justify-start'}`;
+            div.className = `flex mb-4 md:mb-6 w-full animate-slide-up ${isOut ? 'justify-end' : 'justify-start'}`;
             
             const bubbleClass = isOut 
-                ? 'bg-gradient-to-br from-primaryLight to-primary text-gray-900 rounded-[22px] rounded-tl-[4px] shadow-lg shadow-primary/20' 
-                : 'bg-white dark:bg-darkSurface text-gray-800 dark:text-gray-100 rounded-[22px] rounded-tr-[4px] shadow-md border border-gray-50 dark:border-white/5';
+                ? 'bg-gradient-to-br from-primaryLight to-primary text-gray-900 rounded-[18px] md:rounded-[22px] rounded-tl-[4px] shadow-lg shadow-primary/20' 
+                : 'bg-white dark:bg-darkSurface text-gray-800 dark:text-gray-100 rounded-[18px] md:rounded-[22px] rounded-tr-[4px] shadow-md border border-gray-50 dark:border-white/5';
 
             div.innerHTML = `
-                <div class="flex flex-col max-w-[80%] md:max-w-[70%] group">
-                    <div class="${bubbleClass} p-4 px-6 relative transition-transform hover:-translate-y-1 duration-300">
-                        <p class="text-[15px] font-semibold leading-relaxed tracking-wide">${text}</p>
+                <div class="flex flex-col max-w-[85%] md:max-w-[70%] group">
+                    <div class="${bubbleClass} p-3 px-4 md:p-4 md:px-6 relative transition-transform hover:-translate-y-1 duration-300">
+                        <p class="text-sm md:text-[15px] font-semibold leading-relaxed tracking-wide">${text}</p>
                     </div>
-                    <div class="flex items-center gap-2 mt-1.5 px-2 ${isOut ? 'justify-end' : 'justify-start'} opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                        <span class="text-[11px] text-gray-400 font-bold tracking-wider">${time}</span>
+                    <div class="flex items-center gap-1.5 md:gap-2 mt-1 px-2 ${isOut ? 'justify-end' : 'justify-start'} opacity-70 md:opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                        <span class="text-[10px] md:text-[11px] text-gray-400 font-bold tracking-wider">${time}</span>
                         ${isOut ? '<i class="fas fa-check-double text-[10px] text-primary"></i>' : ''}
                     </div>
                 </div>
@@ -502,6 +701,7 @@
                         text: text,
                         chatId: activeChatId,
                         senderId: currentUser.uid,
+                        senderName: currentUser.displayName || 'مستخدم', 
                         createdAt: serverTimestamp()
                     });
                 } catch (e) {
@@ -511,9 +711,13 @@
         }
 
         window.backToMenu = function() {
-            document.getElementById('chat-area').classList.add('hidden');
-            document.getElementById('chat-area').classList.remove('flex');
-            document.getElementById('sidebar').classList.remove('hidden');
+            const chatArea = document.getElementById('chat-area');
+            const sidebar = document.getElementById('sidebar');
+            
+            chatArea.classList.add('hidden');
+            chatArea.classList.remove('flex');
+            sidebar.classList.remove('hidden');
+            
             activeChatId = null;
             renderContacts();
         }
