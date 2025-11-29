@@ -12,12 +12,12 @@
             theme: {
                 extend: {
                     colors: {
-                        primary: '#F59E0B', // العنبر الغني
+                        primary: '#F59E0B', 
                         primaryLight: '#FCD34D',
                         primaryDark: '#B45309',
                         darkBg: '#0F0F0F', 
-                        darkCard: '#18181B', // Zinc 900
-                        darkSurface: '#27272A', // Zinc 800
+                        darkCard: '#18181B', 
+                        darkSurface: '#27272A', 
                     },
                     fontFamily: {
                         cairo: ['Cairo', 'sans-serif'],
@@ -60,22 +60,11 @@
             background: linear-gradient(135deg, #09090b 0%, #000000 100%);
         }
 
-        /* تخصيص السكرول بار */
-        ::-webkit-scrollbar {
-            width: 5px;
-        }
-        ::-webkit-scrollbar-track {
-            background: transparent;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #cbd5e1; 
-            border-radius: 20px;
-        }
-        .dark ::-webkit-scrollbar-thumb {
-            background: #3f3f46; 
-        }
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 20px; }
+        .dark ::-webkit-scrollbar-thumb { background: #3f3f46; }
 
-        /* تأثير الزجاج المحسن */
         .glass-panel {
             background: rgba(255, 255, 255, 0.85);
             backdrop-filter: blur(20px);
@@ -87,7 +76,6 @@
             border: 1px solid rgba(255, 255, 255, 0.05);
         }
 
-        /* نمط الخلفية المزخرف */
         .bg-pattern {
             background-image: radial-gradient(rgba(245, 158, 11, 0.1) 1px, transparent 1px);
             background-size: 24px 24px;
@@ -99,16 +87,13 @@
 </head>
 <body class="h-screen w-full flex items-center justify-center p-0 md:p-4 lg:p-8 transition-colors duration-500 overflow-hidden">
 
-    <!-- الخلفية المزخرفة -->
     <div class="fixed inset-0 bg-pattern opacity-50 pointer-events-none"></div>
 
-    <!-- الإطار الرئيسي للتطبيق -->
     <div class="w-full h-full md:max-w-[1400px] md:h-[92vh] bg-white/90 dark:bg-darkCard/95 md:rounded-[2.5rem] shadow-2xl flex overflow-hidden relative transition-all duration-300 border border-white/60 dark:border-white/5 backdrop-blur-xl">
         
-        <!-- القائمة الجانبية (Sidebar) -->
+        <!-- القائمة الجانبية -->
         <aside class="w-full md:w-[400px] flex flex-col border-l border-gray-100 dark:border-gray-800 bg-white/50 dark:bg-darkCard/50 backdrop-blur-md transition-all z-20" id="sidebar">
             
-            <!-- الهيدر العلوي للقائمة -->
             <header class="p-6 pb-2">
                 <div class="flex justify-between items-center mb-8">
                     <div class="flex items-center gap-3">
@@ -124,13 +109,11 @@
                     </button>
                 </div>
 
-                <!-- شريط البحث -->
                 <div class="relative group mb-6">
                     <i class="fas fa-search absolute right-5 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-primary transition-colors duration-300"></i>
                     <input type="text" placeholder="بحث في المحادثات..." class="w-full bg-gray-100/80 dark:bg-black/20 text-gray-700 dark:text-gray-200 py-4 pr-12 pl-4 rounded-2xl outline-none border border-transparent focus:border-primary/30 focus:bg-white dark:focus:bg-black/40 transition-all placeholder-gray-400 text-sm font-semibold shadow-inner">
                 </div>
 
-                <!-- القصص (Stories) -->
                 <div class="flex gap-5 overflow-x-auto pb-6 no-scrollbar px-1">
                     <div class="flex flex-col items-center gap-2 cursor-pointer group min-w-[68px]">
                         <div class="w-[68px] h-[68px] rounded-full border-2 border-dashed border-gray-300 dark:border-gray-600 group-hover:border-primary p-1 transition-colors">
@@ -140,7 +123,6 @@
                         </div>
                         <span class="text-xs font-bold text-gray-500 dark:text-gray-400">قصتي</span>
                     </div>
-                    <!-- قصة 1 -->
                     <div class="flex flex-col items-center gap-2 cursor-pointer group min-w-[68px]">
                         <div class="w-[68px] h-[68px] rounded-full bg-gradient-to-tr from-primary to-primaryLight p-[2px] shadow-lg shadow-primary/20 transform group-hover:scale-105 transition-transform">
                             <div class="w-full h-full rounded-full border-2 border-white dark:border-darkCard overflow-hidden">
@@ -149,7 +131,6 @@
                         </div>
                         <span class="text-xs font-bold text-gray-600 dark:text-gray-300">سارة</span>
                     </div>
-                    <!-- قصة 2 -->
                     <div class="flex flex-col items-center gap-2 cursor-pointer group min-w-[68px]">
                         <div class="w-[68px] h-[68px] rounded-full border-2 border-gray-200 dark:border-gray-700 p-[2px] group-hover:border-primary/50 transition-colors">
                             <div class="w-full h-full rounded-full border-2 border-white dark:border-darkCard overflow-hidden">
@@ -161,7 +142,6 @@
                 </div>
             </header>
 
-            <!-- عنوان القائمة -->
             <div class="px-6 py-2 flex justify-between items-center">
                 <h2 class="text-sm font-extrabold text-gray-400 dark:text-gray-500 tracking-wider uppercase">الرسائل</h2>
                 <button class="w-8 h-8 rounded-full bg-gray-50 dark:bg-white/5 hover:bg-primary/10 hover:text-primary flex items-center justify-center transition-all text-gray-400">
@@ -169,48 +149,38 @@
                 </button>
             </div>
 
-            <!-- قائمة المحادثات -->
             <ul class="flex-1 overflow-y-auto px-4 space-y-3 pb-4" id="contacts-list">
-                <!-- يتم التعبئة بواسطة JS -->
+                <!-- Contacts List -->
             </ul>
         </aside>
 
-        <!-- منطقة المحادثة (Chat Area) -->
+        <!-- منطقة المحادثة -->
         <main class="hidden md:flex flex-1 flex-col relative bg-white/40 dark:bg-black/20 backdrop-blur-sm transition-colors" id="chat-area">
             
-            <!-- شاشة الترحيب -->
             <div id="welcome-screen" class="hidden h-full flex flex-col items-center justify-center text-center p-8 relative overflow-hidden">
                 <div class="absolute inset-0 bg-pattern opacity-30"></div>
-                
                 <div class="w-56 h-56 bg-gradient-to-br from-yellow-100 to-white dark:from-white/5 dark:to-transparent rounded-full flex items-center justify-center mb-10 relative shadow-2xl animate-float">
                     <div class="absolute inset-0 border border-white/50 rounded-full blur-sm"></div>
                     <i class="fas fa-comment-dots text-8xl text-transparent bg-clip-text bg-gradient-to-br from-primary to-primaryDark drop-shadow-sm"></i>
                 </div>
-                
                 <h2 class="text-4xl font-black text-gray-800 dark:text-white mb-4 tracking-tight">ابدأ المحادثة الآن</h2>
                 <p class="text-gray-500 dark:text-gray-400 max-w-md leading-relaxed text-lg font-medium">مساحة خاصة لتواصل أسرع وأكثر ذكاءً. اختر صديقاً وابدأ رحلة الحديث.</p>
-                
                 <button onclick="if(window.innerWidth < 768) document.getElementById('sidebar').classList.remove('hidden')" class="mt-10 px-10 py-4 bg-gradient-to-r from-primary to-primaryHover text-white font-bold rounded-2xl shadow-glow hover:shadow-lg hover:scale-105 transition-all duration-300 md:hidden">
                     قائمة المحادثات
                 </button>
             </div>
 
-            <!-- واجهة المحادثة النشطة -->
             <div id="active-chat-container" class="flex flex-col h-full w-full relative">
-                
-                <!-- رأس المحادثة -->
                 <header class="glass-panel h-24 px-8 flex justify-between items-center z-10 sticky top-0 shadow-sm/50">
                     <div class="flex items-center gap-5">
                         <button onclick="backToMenu()" class="md:hidden w-10 h-10 flex items-center justify-center rounded-xl bg-gray-50 dark:bg-white/5 text-gray-600 dark:text-gray-300 transition-colors">
                             <i class="fas fa-arrow-right text-lg"></i>
                         </button>
-                        
                         <div class="relative cursor-pointer group">
                             <div class="absolute -inset-0.5 bg-gradient-to-r from-primary to-primaryLight rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur"></div>
                             <img id="header-img" src="" class="relative w-14 h-14 rounded-2xl object-cover shadow-md border-2 border-white dark:border-darkCard">
                             <span class="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 border-2 border-white dark:border-darkCard rounded-full shadow-sm z-10"></span>
                         </div>
-                        
                         <div>
                             <h3 id="header-name" class="font-bold text-gray-900 dark:text-white text-xl leading-tight mb-1"></h3>
                             <div class="flex items-center gap-2">
@@ -222,7 +192,6 @@
                             </div>
                         </div>
                     </div>
-                    
                     <div class="flex gap-3">
                         <button class="w-12 h-12 rounded-2xl bg-gray-50 dark:bg-white/5 hover:bg-primary/10 hover:text-primary dark:hover:text-primary text-gray-400 transition-all flex items-center justify-center group">
                             <i class="fas fa-phone transform group-hover:rotate-12 transition-transform"></i>
@@ -236,27 +205,21 @@
                     </div>
                 </header>
 
-                <!-- منطقة الرسائل -->
                 <div id="messages-box" class="flex-1 overflow-y-auto p-6 md:p-8 space-y-6 scroll-smooth">
-                    <!-- محتوى الرسائل -->
+                    <!-- Messages will be loaded here -->
                 </div>
 
-                <!-- منطقة الكتابة -->
                 <div class="p-6 md:p-8 pt-0 relative z-20">
                     <div class="glass-panel p-2 rounded-[2rem] flex items-end gap-3 shadow-soft transition-all focus-within:ring-2 focus-within:ring-primary/20 focus-within:shadow-glow">
-                        
                         <button class="w-12 h-12 mb-0.5 text-gray-400 hover:text-primary transition-colors rounded-full hover:bg-gray-100 dark:hover:bg-white/10 flex items-center justify-center flex-shrink-0">
                             <i class="far fa-smile text-2xl"></i>
                         </button>
-                        
                         <button class="w-12 h-12 mb-0.5 text-gray-400 hover:text-primary transition-colors rounded-full hover:bg-gray-100 dark:hover:bg-white/10 flex items-center justify-center flex-shrink-0">
                             <i class="fas fa-plus text-xl"></i>
                         </button>
-                        
                         <div class="flex-1 py-3">
                             <textarea id="message-input" rows="1" class="w-full bg-transparent outline-none text-gray-700 dark:text-white resize-none max-h-32 overflow-y-auto placeholder-gray-400 text-base font-medium leading-relaxed" placeholder="اكتب رسالتك هنا..."></textarea>
                         </div>
-                        
                         <button onclick="sendMessage()" class="w-12 h-12 mb-0.5 bg-gradient-to-r from-primary to-primaryHover text-white rounded-full shadow-lg shadow-primary/30 transform hover:scale-110 active:scale-95 transition-all flex items-center justify-center flex-shrink-0">
                             <i class="fas fa-paper-plane text-lg ml-0.5"></i>
                         </button>
@@ -266,111 +229,138 @@
         </main>
     </div>
 
-    <script>
-        // --- إدارة الوضع الليلي ---
-        function toggleDarkMode() {
+    <!-- Firebase SDK & App Logic -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-analytics.js";
+        import { getFirestore, collection, addDoc, query, where, orderBy, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+
+        // --- تهيئة Firebase ---
+        const firebaseConfig = JSON.parse(__firebase_config);
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-vchat';
+        
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
+
+        let currentUser = null;
+        let activeChatId = null;
+        let unsubscribeMessages = null;
+        let isFirstLoad = true;
+
+        // --- المصادقة والبدء ---
+        const initAuth = async () => {
+            try {
+                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                    await signInWithCustomToken(auth, __initial_auth_token);
+                } else {
+                    await signInAnonymously(auth);
+                }
+                console.log("تم بدء المصادقة...");
+            } catch (error) {
+                console.error("خطأ في تسجيل الدخول:", error);
+            }
+        };
+        initAuth();
+
+        // مراقبة حالة التسجيل (نقطة الانطلاق الحقيقية للتطبيق)
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                currentUser = user;
+                console.log("تم تأكيد تسجيل الدخول:", user.uid);
+                
+                // تشغيل التطبيق فقط بعد التأكد من هوية المستخدم
+                if (isFirstLoad) {
+                    renderContacts();
+                    if(window.innerWidth > 768) {
+                       window.openChat(contacts[0].id);
+                    }
+                    isFirstLoad = false;
+                }
+            } else {
+                console.log("لا يوجد مستخدم مسجل حالياً");
+            }
+        });
+
+        // --- بيانات وهمية للواجهة ---
+        const contacts = [
+            {
+                id: "chat_001",
+                name: "أحمد محمد",
+                avatar: "https://ui-avatars.com/api/?name=Ahmad+M&background=fbbf24&color=fff&font-size=0.4&bold=true",
+                lastMessage: "اضغط للبدء...",
+                time: "الآن",
+                unread: 0
+            },
+            {
+                id: "chat_002",
+                name: "فريق التطوير",
+                avatar: "https://ui-avatars.com/api/?name=Dev+Team&background=18181b&color=fff&font-size=0.4&bold=true",
+                lastMessage: "غرفة الفريق",
+                time: "الآن",
+                unread: 0
+            },
+            {
+                id: "chat_003",
+                name: "سارة علي",
+                avatar: "https://ui-avatars.com/api/?name=Sara+Ali&background=fb7185&color=fff&font-size=0.4&bold=true",
+                lastMessage: "محادثة جديدة",
+                time: "الآن",
+                unread: 0
+            }
+        ];
+
+        // --- الدوال الرئيسية ---
+
+        window.toggleDarkMode = function() {
             document.documentElement.classList.toggle('dark');
             const isDark = document.documentElement.classList.contains('dark');
             localStorage.setItem('vchat_theme', isDark ? 'dark' : 'light');
         }
 
-        if (localStorage.getItem('vchat_theme') === 'dark' || (!('vchat_theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-            document.documentElement.classList.add('dark');
-        }
-
-        // --- البيانات ---
-        const contacts = [
-            {
-                id: 1,
-                name: "أحمد محمد",
-                avatar: "https://ui-avatars.com/api/?name=Ahmad+M&background=fbbf24&color=fff&font-size=0.4&bold=true",
-                lastMessage: "تمام، اتفقنا على الموعد 👍",
-                time: "10:30 ص",
-                unread: 3,
-                messages: [
-                    { text: "السلام عليكم يا أحمد، كيف الأمور؟", time: "10:00 ص", type: "out" },
-                    { text: "وعليكم السلام، الحمد لله بخير، أنت كيفك؟", time: "10:05 ص", type: "in" },
-                    { text: "بخير الحمد لله. بخصوص مشروعنا، هل يناسبك اللقاء غداً؟", time: "10:06 ص", type: "out" },
-                    { text: "تمام، اتفقنا على الموعد 👍", time: "10:30 ص", type: "in" }
-                ]
-            },
-            {
-                id: 2,
-                name: "فريق التطوير",
-                avatar: "https://ui-avatars.com/api/?name=Dev+Team&background=18181b&color=fff&font-size=0.4&bold=true",
-                lastMessage: "تم رفع التحديث الجديد v2.0 🚀",
-                time: "أمس",
-                unread: 0,
-                messages: [
-                    { text: "شباب هل التحديث جاهز؟", time: "9:00 م", type: "out" },
-                    { text: "نعم، تم رفع التحديث الجديد v2.0 🚀", time: "9:15 م", type: "in" },
-                    { text: "ممتاز، يعطيكم العافية!", time: "9:16 م", type: "out" }
-                ]
-            },
-            {
-                id: 3,
-                name: "سارة علي",
-                avatar: "https://ui-avatars.com/api/?name=Sara+Ali&background=fb7185&color=fff&font-size=0.4&bold=true",
-                lastMessage: "سأرسل لك الملفات قريباً",
-                time: "الثلاثاء",
-                unread: 1,
-                messages: [
-                    { text: "مرحبا سارة، هل التصاميم جاهزة؟", time: "1:00 م", type: "out" },
-                    { text: "تقريباً، سأرسل لك الملفات قريباً", time: "1:15 م", type: "in" }
-                ]
-            }
-        ];
-
-        let activeChatId = null;
-
-        // --- تهيئة التطبيق ---
         document.addEventListener('DOMContentLoaded', () => {
-            renderContacts();
+            if (localStorage.getItem('vchat_theme') === 'dark' || (!('vchat_theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark');
+            }
             
+            // إعداد مستمعات الأحداث
             const input = document.getElementById('message-input');
             input.addEventListener('keypress', function (e) {
                 if (e.key === 'Enter' && !e.shiftKey) {
                     e.preventDefault();
-                    sendMessage();
+                    window.sendMessage();
                 }
             });
 
-            // تكبير منطقة النص تلقائياً
             input.addEventListener('input', function() {
                 this.style.height = 'auto';
                 this.style.height = (this.scrollHeight) + 'px';
                 if(this.value === '') this.style.height = 'auto';
             });
-
-            if(window.innerWidth > 768) {
-               openChat(contacts[0].id);
-            } else {
-                document.getElementById('chat-area').classList.add('hidden');
-                document.getElementById('sidebar').classList.remove('hidden');
-            }
+            
+            // ملاحظة: تم إزالة استدعاء openChat من هنا ونقله لداخل onAuthStateChanged
+            // لتجنب أخطاء الصلاحيات
         });
 
-        // --- عرض جهات الاتصال ---
         function renderContacts() {
             const list = document.getElementById('contacts-list');
             list.innerHTML = '';
 
             contacts.forEach(contact => {
                 const isActive = activeChatId === contact.id;
-                
-                // ستايل العنصر النشط
                 const activeClasses = isActive 
                     ? 'bg-gradient-to-r from-yellow-50 to-white dark:from-white/10 dark:to-transparent border-primary shadow-sm' 
                     : 'border-transparent hover:bg-gray-50/50 dark:hover:bg-white/5';
 
                 const li = document.createElement('li');
                 li.className = `flex items-center gap-4 p-4 rounded-[1.5rem] cursor-pointer transition-all duration-300 border-l-[6px] group ${activeClasses}`;
-                li.onclick = () => openChat(contact.id);
+                li.onclick = () => window.openChat(contact.id);
 
                 li.innerHTML = `
                     <div class="relative flex-shrink-0">
                         <img src="${contact.avatar}" class="w-[3.5rem] h-[3.5rem] rounded-2xl object-cover shadow-sm group-hover:scale-105 transition-transform duration-300">
-                        ${contact.unread > 0 ? `<div class="absolute -top-1 -left-1 w-4 h-4 bg-primary rounded-full border-2 border-white dark:border-darkCard animate-bounce"></div>` : ''}
                     </div>
                     <div class="flex-1 min-w-0">
                         <div class="flex justify-between items-center mb-1.5">
@@ -378,8 +368,7 @@
                             <span class="text-xs text-gray-400 font-semibold bg-gray-100 dark:bg-white/10 px-2 py-1 rounded-lg">${contact.time}</span>
                         </div>
                         <div class="flex justify-between items-center">
-                            <p class="text-sm text-gray-500 dark:text-gray-400 truncate w-[85%] font-medium ${contact.unread > 0 ? 'text-gray-800 dark:text-white font-bold' : ''}">${contact.lastMessage}</p>
-                            ${contact.unread > 0 ? `<span class="bg-gradient-to-br from-primary to-primaryHover text-white text-[11px] font-bold w-6 h-6 flex items-center justify-center rounded-full shadow-lg shadow-primary/30">${contact.unread}</span>` : ''}
+                            <p class="text-sm text-gray-500 dark:text-gray-400 truncate w-[85%] font-medium">${contact.lastMessage}</p>
                         </div>
                     </div>
                 `;
@@ -387,8 +376,13 @@
             });
         }
 
-        // --- فتح محادثة ---
-        function openChat(id) {
+        window.openChat = function(id) {
+            // حماية إضافية: لا تقم بأي شيء إذا لم يكن المستخدم مسجلاً
+            if (!currentUser) {
+                console.log("جاري انتظار المصادقة...");
+                return;
+            }
+
             activeChatId = id;
             const contact = contacts.find(c => c.id === id);
             
@@ -401,101 +395,122 @@
             document.getElementById('header-img').src = contact.avatar;
             document.getElementById('header-name').innerText = contact.name;
             
-            contact.unread = 0;
             renderContacts();
             
-            renderMessages(contact.messages);
-        }
+            if (unsubscribeMessages) {
+                unsubscribeMessages();
+            }
 
-        // --- عرض الرسائل ---
-        function renderMessages(messages) {
             const box = document.getElementById('messages-box');
-            box.innerHTML = '';
-            
-            box.innerHTML += `
-                <div class="flex justify-center mb-8">
-                    <span class="bg-white/60 dark:bg-white/5 backdrop-blur-md text-gray-500 dark:text-gray-400 text-xs font-bold px-5 py-2 rounded-full shadow-sm border border-white/50 dark:border-white/5">اليوم</span>
-                </div>
-            `;
+            box.innerHTML = '<div class="text-center text-gray-400 mt-10">جاري تحميل الرسائل...</div>';
 
-            messages.forEach((msg, index) => {
-                const isOut = msg.type === 'out';
-                const div = document.createElement('div');
-                div.className = `flex mb-6 w-full animate-slide-up ${isOut ? 'justify-end' : 'justify-start'}`;
-                
-                // تصميم الفقاعة المحسن
-                // المرسل: تدرج لوني أنيق، ظل ملون
-                // المستقبل: لون أبيض نظيف مع ظل ناعم
-                const bubbleClass = isOut 
-                    ? 'bg-gradient-to-br from-primaryLight to-primary text-gray-900 rounded-[22px] rounded-tl-[4px] shadow-lg shadow-primary/20' 
-                    : 'bg-white dark:bg-darkSurface text-gray-800 dark:text-gray-100 rounded-[22px] rounded-tr-[4px] shadow-md border border-gray-50 dark:border-white/5';
+            const messagesRef = collection(db, 'artifacts', appId, 'public', 'data', 'messages');
+            const q = query(
+                messagesRef,
+                where("chatId", "==", id)
+            );
 
-                div.innerHTML = `
-                    <div class="flex flex-col max-w-[80%] md:max-w-[70%] group">
-                        <div class="${bubbleClass} p-4 px-6 relative transition-transform hover:-translate-y-1 duration-300">
-                            <p class="text-[15px] font-semibold leading-relaxed tracking-wide">${msg.text}</p>
-                        </div>
-                        <div class="flex items-center gap-2 mt-1.5 px-2 ${isOut ? 'justify-end' : 'justify-start'} opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                            <span class="text-[11px] text-gray-400 font-bold tracking-wider">${msg.time}</span>
-                            ${isOut ? '<i class="fas fa-check-double text-[10px] text-primary"></i>' : ''}
-                        </div>
-                    </div>
-                `;
+            unsubscribeMessages = onSnapshot(q, (snapshot) => {
+                box.innerHTML = '';
                 
-                // RTL fixes (justify-end = left in RTL)
-                if (isOut) {
-                    div.style.justifyContent = 'flex-end'; 
-                    div.classList.remove('justify-end');
-                    div.classList.add('justify-end'); 
-                } else {
-                    div.style.justifyContent = 'flex-start';
-                    div.classList.remove('justify-start');
-                    div.classList.add('justify-start');
+                if (snapshot.empty) {
+                    box.innerHTML = '<div class="text-center text-gray-400 mt-10">لا توجد رسائل بعد. ابدأ المحادثة!</div>';
+                    return;
                 }
 
-                box.appendChild(div);
-            });
+                box.innerHTML += `
+                    <div class="flex justify-center mb-8">
+                        <span class="bg-white/60 dark:bg-white/5 backdrop-blur-md text-gray-500 dark:text-gray-400 text-xs font-bold px-5 py-2 rounded-full shadow-sm border border-white/50 dark:border-white/5">اليوم</span>
+                    </div>
+                `;
 
-            setTimeout(() => {
+                let messages = [];
+                snapshot.forEach(doc => {
+                    messages.push({ ...doc.data(), id: doc.id });
+                });
+
+                messages.sort((a, b) => {
+                    const timeA = a.createdAt ? a.createdAt.seconds : Date.now()/1000;
+                    const timeB = b.createdAt ? b.createdAt.seconds : Date.now()/1000;
+                    return timeA - timeB;
+                });
+
+                messages.forEach((msg) => {
+                    const isOut = currentUser && msg.senderId === currentUser.uid;
+                    const time = msg.createdAt ? new Date(msg.createdAt.toDate()).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '...';
+                    
+                    renderSingleMessage(box, msg.text, time, isOut);
+                });
+
                 box.scrollTop = box.scrollHeight;
-            }, 50);
+            }, (error) => {
+                console.error("Error fetching messages: ", error);
+                if (error.code === 'permission-denied') {
+                    box.innerHTML = '<div class="text-center text-red-400 mt-10">جاري تأكيد الصلاحيات...</div>';
+                    // إعادة المحاولة تلقائياً بعد ثانية إذا كانت المشكلة تأخير في الشبكة
+                    setTimeout(() => window.openChat(id), 1000);
+                } else {
+                    box.innerHTML = '<div class="text-center text-red-400 mt-10">حدث خطأ في الاتصال.</div>';
+                }
+            });
         }
 
-        // --- إرسال رسالة ---
-        function sendMessage() {
+        function renderSingleMessage(container, text, time, isOut) {
+            const div = document.createElement('div');
+            div.className = `flex mb-6 w-full animate-slide-up ${isOut ? 'justify-end' : 'justify-start'}`;
+            
+            const bubbleClass = isOut 
+                ? 'bg-gradient-to-br from-primaryLight to-primary text-gray-900 rounded-[22px] rounded-tl-[4px] shadow-lg shadow-primary/20' 
+                : 'bg-white dark:bg-darkSurface text-gray-800 dark:text-gray-100 rounded-[22px] rounded-tr-[4px] shadow-md border border-gray-50 dark:border-white/5';
+
+            div.innerHTML = `
+                <div class="flex flex-col max-w-[80%] md:max-w-[70%] group">
+                    <div class="${bubbleClass} p-4 px-6 relative transition-transform hover:-translate-y-1 duration-300">
+                        <p class="text-[15px] font-semibold leading-relaxed tracking-wide">${text}</p>
+                    </div>
+                    <div class="flex items-center gap-2 mt-1.5 px-2 ${isOut ? 'justify-end' : 'justify-start'} opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                        <span class="text-[11px] text-gray-400 font-bold tracking-wider">${time}</span>
+                        ${isOut ? '<i class="fas fa-check-double text-[10px] text-primary"></i>' : ''}
+                    </div>
+                </div>
+            `;
+            
+            if (isOut) {
+                div.style.justifyContent = 'flex-end'; 
+                div.classList.remove('justify-end');
+                div.classList.add('justify-end'); 
+            } else {
+                div.style.justifyContent = 'flex-start';
+                div.classList.remove('justify-start');
+                div.classList.add('justify-start');
+            }
+
+            container.appendChild(div);
+        }
+
+        window.sendMessage = async function() {
             const input = document.getElementById('message-input');
             const text = input.value.trim();
             
-            if (text && activeChatId) {
-                const contact = contacts.find(c => c.id === activeChatId);
-                const now = new Date();
-                const timeString = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            if (text && activeChatId && currentUser) {
+                try {
+                    input.value = '';
+                    input.style.height = 'auto'; 
+                    input.focus();
 
-                contact.messages.push({
-                    text: text,
-                    time: timeString,
-                    type: 'out'
-                });
-
-                contact.lastMessage = text;
-                contact.time = timeString;
-                
-                const contactIndex = contacts.findIndex(c => c.id === activeChatId);
-                if(contactIndex > 0) {
-                    contacts.unshift(contacts.splice(contactIndex, 1)[0]);
+                    await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'messages'), {
+                        text: text,
+                        chatId: activeChatId,
+                        senderId: currentUser.uid,
+                        createdAt: serverTimestamp()
+                    });
+                } catch (e) {
+                    console.error("Error sending message: ", e);
                 }
-
-                renderMessages(contact.messages);
-                renderContacts();
-                
-                input.value = '';
-                input.style.height = 'auto'; 
-                input.focus();
             }
         }
 
-        // --- العودة للقائمة (موبايل) ---
-        function backToMenu() {
+        window.backToMenu = function() {
             document.getElementById('chat-area').classList.add('hidden');
             document.getElementById('chat-area').classList.remove('flex');
             document.getElementById('sidebar').classList.remove('hidden');
