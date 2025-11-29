@@ -364,6 +364,7 @@
 
         // --- إدارة المصادقة الأساسية (System Auth) ---
         const initSystemAuth = async () => {
+            if (auth.currentUser) return; // منع التكرار
             try {
                 if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
                     await signInWithCustomToken(auth, __initial_auth_token);
@@ -432,9 +433,18 @@
                 } else {
                     // إنشاء حساب
                     if (!name) throw new Error("يرجى إدخال الاسم");
-                    await updateProfile(auth.currentUser, {
-                        displayName: name
-                    });
+                    
+                    // محاولة تحديث البروفايل، مع معالجة الخطأ بصمت في حال الرفض
+                    try {
+                        await updateProfile(auth.currentUser, {
+                            displayName: name
+                        });
+                    } catch (profileError) {
+                        console.warn("Could not update profile, fallback to local storage", profileError);
+                    }
+                    
+                    // حفظ البيانات محلياً دائماً كخطة بديلة
+                    localStorage.setItem('vchat_user_name', name);
                     localStorage.setItem('vchat_logged_in', 'true');
                     localStorage.setItem('vchat_user_phone', fullPhone);
                 }
@@ -454,6 +464,8 @@
 
         window.logout = function() {
             localStorage.removeItem('vchat_logged_in');
+            localStorage.removeItem('vchat_user_name');
+            localStorage.removeItem('vchat_user_phone');
             updateUIState(auth.currentUser);
         }
 
@@ -476,7 +488,7 @@
                     isAppReady = true;
                 }
             } else {
-                currentUser = null;
+                // لا نمسح currentUser لضمان استمرار الجلسة الخلفية
                 authScreen.classList.remove('hidden');
                 appScreen.classList.add('hidden');
                 appScreen.classList.remove('flex');
@@ -591,7 +603,6 @@
                 const sidebar = document.getElementById('sidebar');
                 const chatArea = document.getElementById('chat-area');
                 
-                // إضافة أنيميشن بسيط
                 sidebar.classList.add('hidden');
                 chatArea.classList.remove('hidden');
                 chatArea.classList.add('flex');
@@ -664,7 +675,7 @@
 
             div.innerHTML = `
                 <div class="flex flex-col max-w-[85%] md:max-w-[70%] group">
-                    <div class="${bubbleClass} p-3 px-4 md:p-4 md:px-6 relative transition-transform hover:-translate-y-1 duration-300">
+                    <div class="${bubbleClass} p-3 px-4 md:p-4 md:px-6 relative transition-transform hover:-translate-y-1 duration-300 break-words">
                         <p class="text-sm md:text-[15px] font-semibold leading-relaxed tracking-wide">${text}</p>
                     </div>
                     <div class="flex items-center gap-1.5 md:gap-2 mt-1 px-2 ${isOut ? 'justify-end' : 'justify-start'} opacity-70 md:opacity-0 group-hover:opacity-100 transition-opacity duration-300">
@@ -697,11 +708,14 @@
                     input.style.height = 'auto'; 
                     input.focus();
 
+                    // استرجاع الاسم من عدة مصادر لضمان عدم ضياعه
+                    const senderName = localStorage.getItem('vchat_user_name') || currentUser.displayName || localStorage.getItem('vchat_user_phone') || 'مستخدم';
+
                     await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'messages'), {
                         text: text,
                         chatId: activeChatId,
                         senderId: currentUser.uid,
-                        senderName: currentUser.displayName || 'مستخدم', 
+                        senderName: senderName, 
                         createdAt: serverTimestamp()
                     });
                 } catch (e) {
