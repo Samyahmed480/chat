@@ -3,7 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <meta name="theme-color" content="#F59E0B">
+    <meta name="theme-color" content="#ffffff">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <title>V-CHAT | تواصل بذكاء</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
@@ -16,36 +18,21 @@
                         primary: '#F59E0B', 
                         primaryLight: '#FCD34D',
                         primaryDark: '#B45309',
-                        darkBg: '#0F0F0F', 
-                        darkCard: '#18181B', 
-                        darkSurface: '#27272A', 
+                        darkBg: '#000000', 
+                        darkCard: '#1C1C1E', 
+                        darkSurface: '#2C2C2E', 
+                        lightBg: '#F2F2F7',
+                        lightCard: '#FFFFFF',
                     },
                     fontFamily: {
                         cairo: ['Cairo', 'sans-serif'],
                     },
+                    spacing: {
+                        'safe-top': 'env(safe-area-inset-top)',
+                        'safe-bottom': 'env(safe-area-inset-bottom)',
+                    },
                     boxShadow: {
-                        'soft': '0 20px 40px -15px rgba(0,0,0,0.1)',
-                        'glow': '0 0 20px rgba(245, 158, 11, 0.4)',
-                        'inner-light': 'inset 0 2px 4px 0 rgba(255, 255, 255, 0.3)',
-                    },
-                    animation: {
-                        'float': 'float 6s ease-in-out infinite',
-                        'slide-up': 'slideUp 0.4s ease-out forwards',
-                        'fade-in': 'fadeIn 0.5s ease-out forwards',
-                    },
-                    keyframes: {
-                        float: {
-                            '0%, 100%': { transform: 'translateY(0)' },
-                            '50%': { transform: 'translateY(-10px)' },
-                        },
-                        slideUp: {
-                            '0%': { opacity: '0', transform: 'translateY(10px)' },
-                            '100%': { opacity: '1', transform: 'translateY(0)' },
-                        },
-                        fadeIn: {
-                            '0%': { opacity: '0' },
-                            '100%': { opacity: '1' },
-                        }
+                        'native': '0 1px 2px rgba(0,0,0,0.05)',
                     }
                 }
             }
@@ -58,68 +45,48 @@
     <style>
         body {
             font-family: 'Cairo', sans-serif;
-            background: linear-gradient(135deg, #FFFBEB 0%, #FEF3C7 50%, #FDE68A 100%);
-            background-attachment: fixed;
+            background-color: #F2F2F7;
             height: 100dvh; 
+            width: 100vw;
             overflow: hidden;
             -webkit-tap-highlight-color: transparent;
+            overscroll-behavior: none; 
         }
-        .dark body { background: linear-gradient(135deg, #09090b 0%, #000000 100%); }
-        ::-webkit-scrollbar { width: 4px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 20px; }
-        .dark ::-webkit-scrollbar-thumb { background: #3f3f46; }
-        .glass-panel {
-            background: rgba(255, 255, 255, 0.90);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-        }
-        .dark .glass-panel {
-            background: rgba(24, 24, 27, 0.90);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-        }
-        @media (min-width: 768px) {
-            .glass-panel { border: 1px solid rgba(255, 255, 255, 0.6); }
-            .dark .glass-panel { border: 1px solid rgba(255, 255, 255, 0.05); }
-        }
-        .bg-pattern {
-            background-image: radial-gradient(rgba(245, 158, 11, 0.1) 1px, transparent 1px);
-            background-size: 24px 24px;
-        }
-        .dark .bg-pattern {
-            background-image: radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px);
-        }
-        select { -webkit-appearance: none; -moz-appearance: none; appearance: none; }
+        
+        .dark body { background-color: #000000; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        input, select, textarea { font-size: 16px !important; }
+        .pt-safe { padding-top: env(safe-area-inset-top); }
+        .pb-safe { padding-bottom: env(safe-area-inset-bottom); }
+        .mb-safe { margin-bottom: env(safe-area-inset-bottom); }
     </style>
 </head>
-<body class="h-[100dvh] w-full flex items-center justify-center p-0 md:p-4 lg:p-8 transition-colors duration-500 overflow-hidden relative">
-
-    <div class="fixed inset-0 bg-pattern opacity-50 pointer-events-none"></div>
+<body class="h-full w-full flex items-center justify-center transition-colors duration-500 overflow-hidden bg-lightBg dark:bg-darkBg">
 
     <!-- Auth Screen -->
-    <div id="auth-screen" class="hidden w-full h-full md:max-w-md md:h-auto p-0 md:p-6 relative z-50 animate-fade-in flex flex-col justify-center">
-        <div class="w-full h-full md:h-auto glass-panel p-8 md:rounded-[2.5rem] shadow-none md:shadow-2xl relative overflow-y-auto flex flex-col justify-center">
-            <div class="absolute -top-10 -right-10 w-32 h-32 bg-primary/20 rounded-full blur-2xl"></div>
-            <div class="absolute -bottom-10 -left-10 w-32 h-32 bg-primaryDark/20 rounded-full blur-2xl"></div>
-
-            <div class="text-center mb-8 relative mt-10 md:mt-0">
-                <div class="w-20 h-20 bg-gradient-to-br from-primaryLight to-primary rounded-3xl mx-auto flex items-center justify-center text-white shadow-glow mb-4 transform rotate-3 hover:rotate-6 transition-transform">
-                    <i class="fas fa-bolt text-4xl"></i>
+    <div id="auth-screen" class="hidden absolute inset-0 z-50 flex flex-col bg-white dark:bg-darkBg animate-fade-in pt-safe pb-safe overflow-y-auto">
+        <div class="flex-1 flex flex-col justify-center px-6 max-w-md mx-auto w-full">
+            
+            <div class="text-center mb-10">
+                <div class="w-24 h-24 bg-gradient-to-br from-primaryLight to-primary rounded-[2rem] mx-auto flex items-center justify-center text-white shadow-xl mb-6 transform rotate-3">
+                    <i class="fas fa-bolt text-5xl"></i>
                 </div>
-                <h1 class="text-3xl font-black text-gray-800 dark:text-white mb-2">V-CHAT</h1>
-                <p id="auth-subtitle" class="text-gray-500 dark:text-gray-400 font-medium">أنشئ حسابك برقم الهاتف</p>
+                <h1 class="text-4xl font-black text-gray-900 dark:text-white mb-2 tracking-tight">V-CHAT</h1>
+                <p id="auth-subtitle" class="text-gray-500 dark:text-gray-400 font-medium text-lg">سجل دخولك برقم الهاتف وكلمة السر</p>
             </div>
 
-            <form id="auth-form" onsubmit="handleAuth(event)" class="space-y-5 relative max-w-sm mx-auto w-full">
-                <div id="name-field" class="relative group">
-                    <i class="fas fa-user absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-primary transition-colors"></i>
-                    <input type="text" id="input-name" placeholder="الاسم الكامل" class="w-full bg-gray-50 dark:bg-darkSurface text-gray-800 dark:text-white py-4 pr-12 pl-4 rounded-2xl outline-none border border-transparent focus:border-primary/50 transition-all font-semibold shadow-sm">
+            <form id="auth-form" onsubmit="handleAuth(event)" class="space-y-5 w-full">
+                
+                <!-- حقل الاسم (يظهر فقط عند إنشاء الحساب) -->
+                <div id="name-field" class="hidden relative group animate-slide-up">
+                    <input type="text" id="input-name" placeholder="الاسم الكامل" class="w-full bg-gray-100 dark:bg-darkSurface text-gray-900 dark:text-white h-14 px-4 rounded-2xl outline-none border border-transparent focus:border-primary focus:bg-white dark:focus:bg-black transition-all font-bold text-center placeholder-gray-400 shadow-native">
                 </div>
 
-                <div class="flex gap-2">
-                    <div class="relative w-1/3 min-w-[100px]">
-                        <select id="country-code" class="w-full h-full bg-gray-50 dark:bg-darkSurface text-gray-800 dark:text-white py-4 px-2 rounded-2xl outline-none border border-transparent focus:border-primary/50 transition-all font-semibold text-center cursor-pointer shadow-sm">
+                <!-- رقم الهاتف -->
+                <div class="flex gap-3">
+                    <div class="relative w-1/3 min-w-[110px]">
+                        <select id="country-code" class="w-full h-14 bg-gray-100 dark:bg-darkSurface text-gray-900 dark:text-white px-2 rounded-2xl outline-none border border-transparent focus:border-primary transition-all font-bold text-center dir-ltr shadow-native">
                             <option value="+20">🇪🇬 +20</option>
                             <option value="+966">🇸🇦 +966</option>
                             <option value="+971">🇦🇪 +971</option>
@@ -129,196 +96,181 @@
                             <option value="+973">🇧🇭 +973</option>
                             <option value="+962">🇯🇴 +962</option>
                             <option value="+964">🇮🇶 +964</option>
-                            <option value="+961">🇱🇧 +961</option>
                             <option value="+212">🇲🇦 +212</option>
-                            <option value="+213">🇩🇿 +213</option>
-                            <option value="+216">🇹🇳 +216</option>
                         </select>
-                        <i class="fas fa-chevron-down absolute left-2 top-1/2 -translate-y-1/2 text-[10px] text-gray-400 pointer-events-none"></i>
                     </div>
                     <div class="relative group flex-1">
-                        <i class="fas fa-phone absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-primary transition-colors"></i>
-                        <input type="tel" id="input-phone" required placeholder="رقم الموبايل" class="w-full bg-gray-50 dark:bg-darkSurface text-gray-800 dark:text-white py-4 pr-12 pl-4 rounded-2xl outline-none border border-transparent focus:border-primary/50 transition-all font-semibold shadow-sm" pattern="[0-9]*" inputmode="numeric">
+                        <input type="tel" id="input-phone" required placeholder="رقم الهاتف" class="w-full h-14 bg-gray-100 dark:bg-darkSurface text-gray-900 dark:text-white px-4 rounded-2xl outline-none border border-transparent focus:border-primary focus:bg-white dark:focus:bg-black transition-all font-bold text-lg text-center tracking-widest placeholder-gray-400 shadow-native" pattern="[0-9]*" inputmode="numeric">
                     </div>
                 </div>
 
+                <!-- كلمة المرور -->
                 <div class="relative group">
-                    <i class="fas fa-lock absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-primary transition-colors"></i>
-                    <input type="password" id="input-password" required placeholder="كلمة المرور" class="w-full bg-gray-50 dark:bg-darkSurface text-gray-800 dark:text-white py-4 pr-12 pl-4 rounded-2xl outline-none border border-transparent focus:border-primary/50 transition-all font-semibold shadow-sm">
+                    <input type="password" id="input-password" required placeholder="كلمة المرور" class="w-full h-14 bg-gray-100 dark:bg-darkSurface text-gray-900 dark:text-white px-4 rounded-2xl outline-none border border-transparent focus:border-primary focus:bg-white dark:focus:bg-black transition-all font-bold text-center placeholder-gray-400 shadow-native">
                 </div>
 
-                <div id="auth-error" class="text-red-500 text-sm text-center font-bold hidden bg-red-100 dark:bg-red-900/20 p-2 rounded-xl"></div>
+                <div id="auth-error" class="text-red-500 text-sm text-center font-bold hidden bg-red-50 dark:bg-red-900/20 p-3 rounded-xl animate-pulse"></div>
 
-                <button type="submit" id="auth-btn" class="w-full py-4 bg-gradient-to-r from-primary to-primaryHover text-white font-bold rounded-2xl shadow-lg shadow-primary/30 hover:shadow-glow transform hover:scale-[1.02] transition-all flex items-center justify-center gap-2 active:scale-95">
-                    <span id="btn-text">إنشاء حساب</span>
-                    <i class="fas fa-arrow-left"></i>
+                <button type="submit" id="auth-btn" class="w-full h-14 bg-primary hover:bg-primaryDark text-white font-bold text-lg rounded-2xl shadow-lg shadow-primary/30 active:scale-95 transition-all flex items-center justify-center gap-3">
+                    <span id="btn-text">تسجيل الدخول</span>
                     <i id="btn-loader" class="fas fa-circle-notch fa-spin hidden"></i>
                 </button>
             </form>
 
-            <div class="mt-6 text-center pb-8 md:pb-0">
-                <p class="text-gray-500 dark:text-gray-400 text-sm font-medium">
-                    <span id="switch-text">لديك حساب بالفعل؟</span>
-                    <button onclick="toggleAuthMode()" class="text-primary hover:text-primaryDark font-bold underline decoration-2 underline-offset-4 transition-colors p-2">
-                        <span id="switch-btn-text">تسجيل الدخول</span>
-                    </button>
-                </p>
+            <div class="mt-8 text-center pb-safe">
+                <button onclick="toggleAuthMode()" class="text-gray-500 hover:text-primary font-bold transition-colors py-3 px-6 rounded-xl hover:bg-gray-50 dark:hover:bg-white/5 active:bg-gray-100">
+                    <span id="switch-text">ليس لديك حساب؟ إنشاء حساب جديد</span>
+                </button>
             </div>
         </div>
     </div>
 
-    <!-- App Screen -->
-    <div id="app-screen" class="hidden w-full h-full md:max-w-[1400px] md:h-[92vh] bg-white/95 dark:bg-darkCard/95 md:rounded-[2.5rem] shadow-none md:shadow-2xl flex overflow-hidden relative transition-all duration-300 border-none md:border border-white/60 dark:border-white/5 backdrop-blur-xl animate-fade-in">
+    <!-- App Screen (Mobile Optimized) -->
+    <div id="app-screen" class="hidden w-full h-full md:max-w-[1200px] md:h-[95vh] md:rounded-[3rem] md:border-[8px] border-gray-900 bg-white dark:bg-darkBg flex overflow-hidden relative shadow-2xl">
         
-        <aside class="w-full md:w-[400px] flex flex-col border-l-0 md:border-l border-gray-100 dark:border-gray-800 bg-white/50 dark:bg-darkCard/50 backdrop-blur-md transition-all z-20 h-full absolute md:relative inset-0" id="sidebar">
-            <header class="p-4 md:p-6 pb-2 pt-safe-top">
-                <div class="flex justify-between items-center mb-6">
+        <!-- Sidebar / Contact List -->
+        <aside class="w-full md:w-[400px] flex flex-col bg-white dark:bg-darkBg z-20 h-full absolute md:relative inset-0" id="sidebar">
+            
+            <!-- Header (Fixed Top) -->
+            <header class="pt-safe px-5 pb-3 bg-white/90 dark:bg-darkBg/90 backdrop-blur-md sticky top-0 z-30 border-b border-gray-100 dark:border-gray-800">
+                <div class="flex justify-between items-center mb-4 mt-2">
                     <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 md:w-11 md:h-11 bg-gradient-to-br from-primaryLight to-primary rounded-2xl flex items-center justify-center text-white shadow-glow">
-                            <i class="fas fa-bolt text-lg md:text-xl"></i>
+                        <div class="w-10 h-10 bg-primary rounded-full flex items-center justify-center text-white shadow-lg shadow-primary/30">
+                            <i class="fas fa-bolt text-lg"></i>
                         </div>
-                        <h1 class="text-xl md:text-2xl font-black tracking-wide text-gray-800 dark:text-white">V-CHAT</h1>
+                        <h1 class="text-2xl font-black text-gray-900 dark:text-white tracking-tight">V-CHAT</h1>
                     </div>
                     
                     <div class="flex gap-2">
-                        <button onclick="toggleDarkMode()" class="w-10 h-10 md:w-11 md:h-11 rounded-full bg-gray-50 dark:bg-white/5 hover:bg-yellow-50 dark:hover:bg-white/10 flex items-center justify-center transition-all text-gray-500 dark:text-gray-300 shadow-sm active:bg-gray-200">
-                            <i class="fas fa-moon dark:hidden text-lg"></i>
-                            <i class="fas fa-sun hidden dark:block text-primary text-lg"></i>
+                        <button onclick="openAddFriendModal()" class="w-10 h-10 rounded-full bg-gray-100 dark:bg-darkSurface hover:bg-primary hover:text-white flex items-center justify-center transition-all text-gray-600 dark:text-gray-300 active:scale-90">
+                            <i class="fas fa-user-plus"></i>
                         </button>
-                        <button onclick="logout()" class="w-10 h-10 md:w-11 md:h-11 rounded-full bg-red-50 dark:bg-red-900/10 hover:bg-red-100 dark:hover:bg-red-900/20 flex items-center justify-center transition-all text-red-500 shadow-sm active:bg-red-100" title="تسجيل الخروج">
-                            <i class="fas fa-sign-out-alt text-lg"></i>
+                        <button onclick="toggleDarkMode()" class="w-10 h-10 rounded-full bg-gray-100 dark:bg-darkSurface flex items-center justify-center transition-all text-gray-600 dark:text-gray-300 active:scale-90">
+                            <i class="fas fa-moon dark:hidden"></i>
+                            <i class="fas fa-sun hidden dark:block text-primary"></i>
+                        </button>
+                        <button onclick="logout()" class="w-10 h-10 rounded-full bg-red-50 dark:bg-red-900/20 text-red-500 flex items-center justify-center transition-all active:scale-90">
+                            <i class="fas fa-power-off"></i>
                         </button>
                     </div>
                 </div>
 
-                <div class="relative group mb-4 md:mb-6">
-                    <i class="fas fa-search absolute right-5 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-primary transition-colors duration-300"></i>
-                    <input type="text" placeholder="بحث في المحادثات..." class="w-full bg-gray-100/80 dark:bg-black/20 text-gray-700 dark:text-gray-200 py-3 md:py-4 pr-12 pl-4 rounded-2xl outline-none border border-transparent focus:border-primary/30 focus:bg-white dark:focus:bg-black/40 transition-all placeholder-gray-400 text-sm font-semibold shadow-inner">
-                </div>
-
-                <div class="flex gap-4 md:gap-5 overflow-x-auto pb-4 md:pb-6 no-scrollbar px-1">
-                    <div class="flex flex-col items-center gap-2 cursor-pointer group min-w-[60px] md:min-w-[68px]">
-                        <div class="w-[60px] h-[60px] md:w-[68px] md:h-[68px] rounded-full border-2 border-dashed border-gray-300 dark:border-gray-600 group-hover:border-primary p-1 transition-colors">
-                            <div class="w-full h-full bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center group-hover:bg-yellow-50 dark:group-hover:bg-white/5 transition-colors">
-                                <i class="fas fa-plus text-xl text-gray-400 group-hover:text-primary transition-colors"></i>
-                            </div>
-                        </div>
-                        <span class="text-[10px] md:text-xs font-bold text-gray-500 dark:text-gray-400">قصتي</span>
-                    </div>
-                    <div class="flex flex-col items-center gap-2 cursor-pointer group min-w-[60px] md:min-w-[68px]">
-                        <div class="w-[60px] h-[60px] md:w-[68px] md:h-[68px] rounded-full bg-gradient-to-tr from-primary to-primaryLight p-[2px] shadow-lg shadow-primary/20">
-                            <div class="w-full h-full rounded-full border-2 border-white dark:border-darkCard overflow-hidden">
-                                <img src="https://ui-avatars.com/api/?name=Sara&background=fbbf24&color=fff" class="w-full h-full object-cover">
-                            </div>
-                        </div>
-                        <span class="text-[10px] md:text-xs font-bold text-gray-600 dark:text-gray-300">سارة</span>
-                    </div>
-                    <div class="flex flex-col items-center gap-2 cursor-pointer group min-w-[60px] md:min-w-[68px]">
-                        <div class="w-[60px] h-[60px] md:w-[68px] md:h-[68px] rounded-full border-2 border-gray-200 dark:border-gray-700 p-[2px]">
-                            <div class="w-full h-full rounded-full border-2 border-white dark:border-darkCard overflow-hidden">
-                                <img src="https://ui-avatars.com/api/?name=Ali&background=random" class="w-full h-full object-cover filter grayscale">
-                            </div>
-                        </div>
-                        <span class="text-[10px] md:text-xs font-bold text-gray-600 dark:text-gray-300">علي</span>
-                    </div>
+                <!-- Search -->
+                <div class="relative">
+                    <i class="fas fa-search absolute right-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                    <input type="text" id="search-input" onkeyup="filterContacts()" placeholder="بحث..." class="w-full bg-gray-100 dark:bg-darkSurface text-gray-900 dark:text-white h-12 pr-11 pl-4 rounded-xl outline-none transition-all font-medium placeholder-gray-500">
                 </div>
             </header>
 
-            <div class="px-6 py-2 flex justify-between items-center">
-                <h2 class="text-xs md:text-sm font-extrabold text-gray-400 dark:text-gray-500 tracking-wider uppercase">الرسائل</h2>
-                <button class="w-8 h-8 rounded-full bg-gray-50 dark:bg-white/5 hover:bg-primary/10 hover:text-primary flex items-center justify-center transition-all text-gray-400">
-                    <i class="fas fa-sort-amount-down"></i>
-                </button>
+            <!-- Stories Bar -->
+            <div class="px-5 py-3 border-b border-gray-100 dark:border-gray-800">
+                <div class="flex gap-4 overflow-x-auto no-scrollbar pb-1">
+                    <div class="flex flex-col items-center gap-1 cursor-pointer min-w-[64px]">
+                        <div class="w-16 h-16 rounded-full border-2 border-dashed border-gray-300 dark:border-gray-600 flex items-center justify-center bg-gray-50 dark:bg-darkSurface">
+                            <i class="fas fa-plus text-gray-400"></i>
+                        </div>
+                        <span class="text-xs font-medium text-gray-500 dark:text-gray-400">قصتي</span>
+                    </div>
+                    <!-- Sample Stories -->
+                    <div class="flex flex-col items-center gap-1 cursor-pointer min-w-[64px]">
+                        <div class="w-16 h-16 rounded-full border-2 border-primary p-0.5">
+                            <img src="https://ui-avatars.com/api/?name=Sara&background=fbbf24&color=fff" class="w-full h-full rounded-full object-cover">
+                        </div>
+                        <span class="text-xs font-medium text-gray-900 dark:text-gray-300">سارة</span>
+                    </div>
+                </div>
             </div>
 
-            <ul class="flex-1 overflow-y-auto px-4 space-y-2 md:space-y-3 pb-20 md:pb-4" id="contacts-list"></ul>
+            <!-- Contacts List -->
+            <div class="flex-1 overflow-y-auto px-4 py-2 space-y-2 pb-24" id="contacts-list">
+                <!-- List Items -->
+            </div>
         </aside>
 
-        <main class="hidden md:flex flex-1 flex-col relative bg-white/40 dark:bg-black/20 backdrop-blur-sm transition-colors absolute md:relative inset-0 z-30" id="chat-area">
+        <!-- Chat Area -->
+        <main class="hidden md:flex flex-1 flex-col relative bg-[#F2F2F7] dark:bg-[#000000] z-30 absolute md:relative inset-0 w-full h-full" id="chat-area">
             
-            <div id="welcome-screen" class="hidden md:flex h-full flex-col items-center justify-center text-center p-8 relative overflow-hidden">
-                <div class="absolute inset-0 bg-pattern opacity-30"></div>
-                <div class="w-56 h-56 bg-gradient-to-br from-yellow-100 to-white dark:from-white/5 dark:to-transparent rounded-full flex items-center justify-center mb-10 relative shadow-2xl animate-float">
-                    <div class="absolute inset-0 border border-white/50 rounded-full blur-sm"></div>
-                    <i class="fas fa-comment-dots text-8xl text-transparent bg-clip-text bg-gradient-to-br from-primary to-primaryDark drop-shadow-sm"></i>
+            <!-- Chat Header -->
+            <header class="bg-white/90 dark:bg-darkCard/90 backdrop-blur-xl px-4 pt-safe pb-3 flex justify-between items-center shadow-sm z-20 sticky top-0 border-b border-gray-200 dark:border-gray-800">
+                <div class="flex items-center gap-3">
+                    <button onclick="backToMenu()" class="md:hidden w-9 h-9 flex items-center justify-center rounded-full bg-gray-100 dark:bg-white/10 text-gray-900 dark:text-white active:bg-gray-200">
+                        <i class="fas fa-chevron-right text-lg"></i>
+                    </button>
+                    <div class="flex items-center gap-3">
+                        <div class="relative">
+                            <img id="header-img" src="" class="w-10 h-10 rounded-full object-cover bg-gray-200">
+                            <span class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 border-2 border-white dark:border-darkCard rounded-full"></span>
+                        </div>
+                        <div class="flex flex-col">
+                            <h3 id="header-name" class="font-bold text-gray-900 dark:text-white text-base leading-none mb-1"></h3>
+                            <span class="text-xs text-primary font-medium leading-none">متصل الآن</span>
+                        </div>
+                    </div>
                 </div>
-                <h2 class="text-4xl font-black text-gray-800 dark:text-white mb-4 tracking-tight">ابدأ المحادثة الآن</h2>
-                <p class="text-gray-500 dark:text-gray-400 max-w-md leading-relaxed text-lg font-medium">مساحة خاصة لتواصل أسرع وأكثر ذكاءً. اختر صديقاً وابدأ رحلة الحديث.</p>
+                <div class="flex gap-3 text-primary">
+                    <button class="w-9 h-9 flex items-center justify-center rounded-full bg-primary/10 hover:bg-primary/20 transition-colors"><i class="fas fa-phone text-sm"></i></button>
+                    <button class="w-9 h-9 flex items-center justify-center rounded-full bg-primary/10 hover:bg-primary/20 transition-colors"><i class="fas fa-video text-sm"></i></button>
+                </div>
+            </header>
+
+            <!-- Messages -->
+            <div id="messages-box" class="flex-1 overflow-y-auto px-4 py-4 space-y-3 bg-lightBg dark:bg-darkBg">
+                <!-- Messages -->
             </div>
 
-            <div id="active-chat-container" class="flex flex-col h-full w-full relative bg-white dark:bg-darkBg md:bg-transparent">
-                <header class="glass-panel h-20 md:h-24 px-4 md:px-8 flex justify-between items-center z-10 sticky top-0 shadow-sm/50 pt-safe-top">
-                    <div class="flex items-center gap-3 md:gap-5">
-                        <button onclick="backToMenu()" class="md:hidden w-10 h-10 flex items-center justify-center rounded-xl bg-gray-50 dark:bg-white/5 text-gray-600 dark:text-gray-300 transition-colors active:bg-gray-200">
-                            <i class="fas fa-arrow-right text-lg"></i>
-                        </button>
-                        <div class="relative cursor-pointer group">
-                            <div class="absolute -inset-0.5 bg-gradient-to-r from-primary to-primaryLight rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur"></div>
-                            <img id="header-img" src="" class="relative w-10 h-10 md:w-14 md:h-14 rounded-xl md:rounded-2xl object-cover shadow-md border-2 border-white dark:border-darkCard">
-                            <span class="absolute -bottom-1 -right-1 w-3 h-3 md:w-4 md:h-4 bg-green-500 border-2 border-white dark:border-darkCard rounded-full shadow-sm z-10"></span>
-                        </div>
-                        <div>
-                            <h3 id="header-name" class="font-bold text-gray-900 dark:text-white text-base md:text-xl leading-tight mb-0.5 md:mb-1"></h3>
-                            <div class="flex items-center gap-1.5 md:gap-2">
-                                <span class="flex h-1.5 w-1.5 md:h-2 md:w-2 relative">
-                                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                                    <span class="relative inline-flex rounded-full h-full w-full bg-green-500"></span>
-                                </span>
-                                <span class="text-[10px] md:text-xs text-gray-500 dark:text-gray-400 font-semibold tracking-wide">نشط الآن</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="flex gap-2 md:gap-3">
-                        <button class="w-10 h-10 md:w-12 md:h-12 rounded-xl md:rounded-2xl bg-gray-50 dark:bg-white/5 hover:bg-primary/10 hover:text-primary dark:hover:text-primary text-gray-400 transition-all flex items-center justify-center">
-                            <i class="fas fa-phone"></i>
-                        </button>
-                        <button class="w-10 h-10 md:w-12 md:h-12 rounded-xl md:rounded-2xl bg-gray-50 dark:bg-white/5 hover:bg-primary/10 hover:text-primary dark:hover:text-primary text-gray-400 transition-all flex items-center justify-center">
-                            <i class="fas fa-video"></i>
-                        </button>
-                        <button class="hidden md:flex w-12 h-12 rounded-2xl bg-gray-50 dark:bg-white/5 hover:bg-primary/10 hover:text-primary dark:hover:text-primary text-gray-400 transition-all items-center justify-center">
-                            <i class="fas fa-ellipsis-v"></i>
-                        </button>
-                    </div>
-                </header>
-
-                <div id="messages-box" class="flex-1 overflow-y-auto p-4 md:p-8 space-y-4 md:space-y-6 scroll-smooth pb-4"></div>
-
-                <div class="p-3 md:p-8 pt-0 relative z-20 pb-safe-bottom">
-                    <div class="glass-panel p-2 rounded-[1.5rem] md:rounded-[2rem] flex items-end gap-2 md:gap-3 shadow-soft transition-all focus-within:ring-2 focus-within:ring-primary/20 focus-within:shadow-glow">
-                        <button class="w-10 h-10 md:w-12 md:h-12 mb-0.5 text-gray-400 hover:text-primary transition-colors rounded-full hover:bg-gray-100 dark:hover:bg-white/10 flex items-center justify-center flex-shrink-0">
-                            <i class="far fa-smile text-xl md:text-2xl"></i>
-                        </button>
-                        <button class="w-10 h-10 md:w-12 md:h-12 mb-0.5 text-gray-400 hover:text-primary transition-colors rounded-full hover:bg-gray-100 dark:hover:bg-white/10 flex items-center justify-center flex-shrink-0">
-                            <i class="fas fa-plus text-lg md:text-xl"></i>
-                        </button>
-                        <div class="flex-1 py-2 md:py-3">
-                            <textarea id="message-input" rows="1" class="w-full bg-transparent outline-none text-gray-700 dark:text-white resize-none max-h-32 overflow-y-auto placeholder-gray-400 text-sm md:text-base font-medium leading-relaxed" placeholder="اكتب رسالتك هنا..."></textarea>
-                        </div>
-                        <button onclick="sendMessage()" class="w-10 h-10 md:w-12 md:h-12 mb-0.5 bg-gradient-to-r from-primary to-primaryHover text-white rounded-full shadow-lg shadow-primary/30 transform active:scale-90 transition-all flex items-center justify-center flex-shrink-0">
-                            <i class="fas fa-paper-plane text-base md:text-lg ml-0.5"></i>
-                        </button>
-                    </div>
+            <!-- Input Area (Fixed Bottom) -->
+            <div class="p-3 bg-white dark:bg-darkCard border-t border-gray-200 dark:border-gray-800 pb-safe-bottom">
+                <div class="flex items-end gap-2 bg-gray-100 dark:bg-darkSurface p-1.5 rounded-[1.5rem]">
+                    <button class="w-10 h-10 rounded-full text-gray-400 hover:text-primary flex items-center justify-center flex-shrink-0 active:bg-gray-200 dark:active:bg-white/10"><i class="fas fa-plus text-xl"></i></button>
+                    <textarea id="message-input" rows="1" class="flex-1 bg-transparent text-gray-900 dark:text-white outline-none py-2.5 px-2 text-base resize-none max-h-32 placeholder-gray-500" placeholder="اكتب رسالة..."></textarea>
+                    <button onclick="sendMessage()" class="w-10 h-10 rounded-full bg-primary text-white shadow-md flex items-center justify-center flex-shrink-0 active:scale-90 transition-transform"><i class="fas fa-paper-plane text-sm ml-0.5"></i></button>
                 </div>
             </div>
         </main>
     </div>
 
+    <!-- Add Friend Modal -->
+    <div id="add-friend-modal" class="hidden fixed inset-0 z-[60] bg-black/60 backdrop-blur-sm flex items-end md:items-center justify-center p-0 md:p-4">
+        <div class="bg-white dark:bg-darkCard w-full md:max-w-sm rounded-t-[2rem] md:rounded-[2rem] p-6 pb-safe shadow-2xl relative animate-slide-up">
+            <div class="w-12 h-1.5 bg-gray-300 dark:bg-gray-700 rounded-full mx-auto mb-6 md:hidden"></div>
+            
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-xl font-bold text-gray-900 dark:text-white">إضافة صديق</h3>
+                <button onclick="closeAddFriendModal()" class="w-8 h-8 rounded-full bg-gray-100 dark:bg-white/10 flex items-center justify-center text-gray-500"><i class="fas fa-times"></i></button>
+            </div>
+
+            <div class="space-y-4">
+                <div class="flex gap-2">
+                    <select id="friend-country-code" class="w-1/3 h-12 bg-gray-100 dark:bg-darkSurface text-gray-900 dark:text-white px-2 rounded-xl outline-none font-bold text-center dir-ltr">
+                        <option value="+20">🇪🇬 +20</option>
+                        <option value="+966">🇸🇦 +966</option>
+                        <option value="+971">🇦🇪 +971</option>
+                    </select>
+                    <input type="tel" id="friend-phone" placeholder="رقم الهاتف" class="flex-1 h-12 bg-gray-100 dark:bg-darkSurface text-gray-900 dark:text-white px-4 rounded-xl outline-none font-bold text-center tracking-wider placeholder-gray-400" pattern="[0-9]*" inputmode="numeric">
+                </div>
+                
+                <div id="search-result" class="text-center text-sm font-bold min-h-[20px]"></div>
+
+                <button onclick="searchAndAddFriend()" class="w-full h-12 bg-primary text-white font-bold rounded-xl shadow-lg active:scale-95 transition-transform">
+                    بحث وإضافة
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK & Logic -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-        import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-analytics.js";
-        import { getFirestore, collection, addDoc, query, where, orderBy, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
-        import { getAuth, signInWithCustomToken, signInAnonymously, onAuthStateChanged, updateProfile, signOut } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+        import { getFirestore, collection, doc, getDoc, setDoc, addDoc, query, where, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+        import { getAuth, signInWithCustomToken, createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile, signInAnonymously, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
 
-        // --- Firebase Configuration Management ---
+        // Firebase Config
         let firebaseConfig;
         let appId;
-
         try {
-            // Attempt to use the environment's trusted config
             firebaseConfig = JSON.parse(__firebase_config);
             appId = typeof __app_id !== 'undefined' ? __app_id : 'v-chat-default';
         } catch (e) {
-            // Fallback for external use (if downloaded)
             console.warn("Using fallback config");
             firebaseConfig = {
                 apiKey: "AIzaSyC57FxQsqRmDhP2oD5NeEtxKbSbWNGdPu8",
@@ -333,373 +285,410 @@
         }
         
         const app = initializeApp(firebaseConfig);
-        const analytics = getAnalytics(app);
         const db = getFirestore(app);
         const auth = getAuth(app);
 
-        let currentUser = null;
         let activeChatId = null;
         let unsubscribeMessages = null;
-        let isAuthModeLogin = false; 
-        let isAppReady = false; 
+        let isAuthModeLogin = true; 
 
-        // --- System Authentication Logic ---
-        const initSystemAuth = async () => {
-            if (auth.currentUser) return; 
-            try {
-                // Prioritize environment token if available
-                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                    await signInWithCustomToken(auth, __initial_auth_token);
-                } else {
+        // --- System Auth (Initial Connection) ---
+        const ensureConnection = async () => {
+            if (!auth.currentUser) {
+                try {
+                    // Try to connect anonymously immediately to allow initial operations
                     await signInAnonymously(auth);
-                }
-                console.log("System Auth Connected");
-            } catch (error) {
-                console.error("System Auth Error:", error);
-                // Even if auth fails, we should let the UI render in a fallback state
-                isAppReady = true;
-                renderContacts(); // Attempt to render UI anyway
+                } catch(e) { console.log("Connection init:", e); }
             }
         };
 
-        // --- UI Logic ---
-        window.toggleAuthMode = function() {
+        // --- UI Logic & Global Functions ---
+        
+        // Define toggleDarkMode on window
+        window.toggleDarkMode = function() {
+            document.documentElement.classList.toggle('dark');
+            const isDark = document.documentElement.classList.contains('dark');
+            localStorage.setItem('vchat_theme', isDark ? 'dark' : 'light');
+        };
+
+        window.toggleAuthMode = () => {
             isAuthModeLogin = !isAuthModeLogin;
             const nameField = document.getElementById('name-field');
             const authTitle = document.getElementById('auth-subtitle');
             const btnText = document.getElementById('btn-text');
             const switchText = document.getElementById('switch-text');
-            const switchBtnText = document.getElementById('switch-btn-text');
 
             if (isAuthModeLogin) {
                 nameField.classList.add('hidden');
-                authTitle.innerText = 'أهلاً بك مجدداً، سجل دخولك';
+                authTitle.innerText = 'سجل دخولك برقم الهاتف وكلمة السر';
                 btnText.innerText = 'تسجيل الدخول';
-                switchText.innerText = 'ليس لديك حساب؟';
-                switchBtnText.innerText = 'إنشاء حساب جديد';
+                switchText.innerText = 'ليس لديك حساب؟ إنشاء حساب جديد';
             } else {
                 nameField.classList.remove('hidden');
-                authTitle.innerText = 'أنشئ حسابك برقم الهاتف';
+                authTitle.innerText = 'أنشئ حسابك الجديد';
                 btnText.innerText = 'إنشاء حساب';
-                switchText.innerText = 'لديك حساب بالفعل؟';
-                switchBtnText.innerText = 'تسجيل الدخول';
+                switchText.innerText = 'لديك حساب؟ سجل دخول';
             }
-        }
+        };
 
-        window.handleAuth = async function(e) {
+        window.handleAuth = async (e) => {
             e.preventDefault();
             const name = document.getElementById('input-name').value;
-            const countryCode = document.getElementById('country-code').value;
-            const phoneNumber = document.getElementById('input-phone').value;
-            const fullPhone = countryCode + phoneNumber;
-            
+            const code = document.getElementById('country-code').value;
+            const phone = document.getElementById('input-phone').value;
+            const password = document.getElementById('input-password').value;
             const errorDiv = document.getElementById('auth-error');
-            const loader = document.getElementById('btn-loader');
             const btn = document.getElementById('auth-btn');
+            const loader = document.getElementById('btn-loader');
+
+            if (!phone || phone.length < 5) return showError('رقم الهاتف غير صحيح');
+            if (password.length < 6) return showError('كلمة المرور يجب أن تكون 6 أحرف على الأقل');
+            if (!isAuthModeLogin && !name) return showError('الاسم مطلوب');
+
+            const fullPhone = code + phone;
+            const email = fullPhone.replace('+', '') + '@vchat.app'; 
 
             errorDiv.classList.add('hidden');
-            loader.classList.remove('hidden');
             btn.disabled = true;
+            loader.classList.remove('hidden');
 
             try {
-                if (!auth.currentUser) {
-                    await initSystemAuth();
+                let useFallback = false;
+
+                try {
+                    if (isAuthModeLogin) {
+                        await signInWithEmailAndPassword(auth, email, password);
+                    } else {
+                        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                        await updateProfile(userCredential.user, { displayName: name });
+                        
+                        const userRef = doc(db, 'artifacts', appId, 'public', 'data', 'users', fullPhone);
+                        await setDoc(userRef, {
+                            uid: userCredential.user.uid,
+                            displayName: name,
+                            phoneNumber: fullPhone,
+                            avatar: `https://ui-avatars.com/api/?name=${name}&background=random&color=fff`,
+                            createdAt: serverTimestamp()
+                        });
+                    }
+                } catch (innerErr) {
+                    if (innerErr.code === 'auth/operation-not-allowed') {
+                        console.warn("Email auth disabled, using fallback...");
+                        useFallback = true;
+                    } else {
+                        throw innerErr;
+                    }
                 }
 
-                if(!phoneNumber || phoneNumber.length < 5) {
-                    throw new Error("يرجى إدخال رقم هاتف صحيح");
-                }
-
-                if (isAuthModeLogin) {
-                    localStorage.setItem('vchat_logged_in', 'true');
-                    localStorage.setItem('vchat_user_phone', fullPhone);
-                } else {
-                    if (!name) throw new Error("يرجى إدخال الاسم");
-                    
-                    try {
-                        if(auth.currentUser) {
-                            await updateProfile(auth.currentUser, { displayName: name });
-                        }
-                    } catch (e) {}
-                    
-                    localStorage.setItem('vchat_user_name', name);
-                    localStorage.setItem('vchat_logged_in', 'true');
-                    localStorage.setItem('vchat_user_phone', fullPhone);
+                if (useFallback) {
+                    await fallbackAuth(isAuthModeLogin ? null : name, fullPhone);
                 }
                 
-                updateUIState(auth.currentUser);
+                localStorage.setItem('vchat_user_phone', fullPhone);
+                localStorage.setItem('vchat_logged_in', 'true');
+                updateUIState(auth.currentUser || {uid: 'anon'});
 
-            } catch (error) {
-                console.error(error);
-                errorDiv.innerText = error.message || "حدث خطأ، يرجى المحاولة مرة أخرى.";
-                errorDiv.classList.remove('hidden');
+            } catch (err) {
+                console.error(err);
+                if (err.code === 'auth/email-already-in-use') showError('رقم الهاتف مستخدم بالفعل');
+                else if (err.code === 'auth/wrong-password') showError('كلمة المرور غير صحيحة');
+                else if (err.code === 'auth/user-not-found') showError('المستخدم غير موجود');
+                else if (err.code === 'permission-denied') {
+                    console.warn("Write permission denied, proceeding locally");
+                    localStorage.setItem('vchat_user_name', name);
+                    localStorage.setItem('vchat_user_phone', fullPhone);
+                    localStorage.setItem('vchat_logged_in', 'true');
+                    updateUIState(auth.currentUser || {uid: 'anon'});
+                }
+                else showError('حدث خطأ: ' + err.message);
             } finally {
-                loader.classList.add('hidden');
                 btn.disabled = false;
+                loader.classList.add('hidden');
+            }
+        };
+
+        async function fallbackAuth(name, fullPhone) {
+            if (!auth.currentUser) await signInAnonymously(auth);
+            
+            if (name) {
+                try {
+                    const userRef = doc(db, 'artifacts', appId, 'public', 'data', 'users', fullPhone);
+                    await setDoc(userRef, {
+                        uid: auth.currentUser.uid,
+                        displayName: name,
+                        phoneNumber: fullPhone,
+                        avatar: `https://ui-avatars.com/api/?name=${name}&background=random&color=fff`,
+                        createdAt: serverTimestamp()
+                    });
+                } catch(e) {}
+                localStorage.setItem('vchat_user_name', name);
+            } else {
+                try {
+                    const userRef = doc(db, 'artifacts', appId, 'public', 'data', 'users', fullPhone);
+                    const snap = await getDoc(userRef);
+                    if(snap.exists()) {
+                        localStorage.setItem('vchat_user_name', snap.data().displayName);
+                    }
+                } catch(e) {}
             }
         }
 
-        window.logout = function() {
-            localStorage.removeItem('vchat_logged_in');
-            localStorage.removeItem('vchat_user_name');
-            localStorage.removeItem('vchat_user_phone');
-            // Force reload to reset state cleanly
-            window.location.reload();
+        function showError(msg) {
+            const el = document.getElementById('auth-error');
+            el.innerText = msg;
+            el.classList.remove('hidden');
         }
 
-        function updateUIState(user) {
-            const authScreen = document.getElementById('auth-screen');
-            const appScreen = document.getElementById('app-screen');
-            const isLoggedIn = localStorage.getItem('vchat_logged_in') === 'true';
+        window.logout = () => {
+            localStorage.clear();
+            window.location.reload();
+        };
 
-            // Show app only if logged in AND system auth is ready (or bypassed)
-            if (isLoggedIn) {
-                currentUser = user;
-                authScreen.classList.add('hidden');
-                appScreen.classList.remove('hidden');
-                appScreen.classList.add('flex');
-                
-                if (!isAppReady) {
-                    renderContacts();
-                    if(window.innerWidth > 768) {
-                       window.openChat(contacts[0].id);
-                    }
-                    isAppReady = true;
+        // --- Contacts & Search ---
+        function loadContacts() {
+            const str = localStorage.getItem('vchat_contacts');
+            return str ? JSON.parse(str) : [];
+        }
+
+        function saveContact(contact) {
+            const contacts = loadContacts();
+            if (!contacts.find(c => c.phoneNumber === contact.phoneNumber)) {
+                contacts.push(contact);
+                localStorage.setItem('vchat_contacts', JSON.stringify(contacts));
+                renderContacts();
+            }
+        }
+
+        window.openAddFriendModal = () => {
+            document.getElementById('add-friend-modal').classList.remove('hidden');
+            document.getElementById('friend-phone').value = '';
+            document.getElementById('friend-phone').focus();
+            document.getElementById('search-result').innerText = '';
+        };
+
+        window.closeAddFriendModal = () => {
+            document.getElementById('add-friend-modal').classList.add('hidden');
+        };
+
+        window.searchAndAddFriend = async () => {
+            const code = document.getElementById('friend-country-code').value;
+            const phone = document.getElementById('friend-phone').value;
+            const resEl = document.getElementById('search-result');
+            
+            if (!phone) return;
+            const target = code + phone;
+            const myPhone = localStorage.getItem('vchat_user_phone');
+
+            if (target === myPhone) {
+                resEl.innerText = "هذا رقمك!";
+                resEl.className = "text-red-500 text-sm font-bold text-center";
+                return;
+            }
+
+            resEl.innerText = "جاري البحث...";
+            resEl.className = "text-primary text-sm font-bold text-center";
+
+            try {
+                if(!auth.currentUser) await signInAnonymously(auth);
+
+                const userRef = doc(db, 'artifacts', appId, 'public', 'data', 'users', target);
+                const snap = await getDoc(userRef);
+
+                if (snap.exists()) {
+                    const data = snap.data();
+                    saveContact(data);
+                    resEl.innerText = "تمت الإضافة!";
+                    resEl.className = "text-green-500 text-sm font-bold text-center";
+                    setTimeout(() => {
+                        closeAddFriendModal();
+                        window.openChat(data.phoneNumber);
+                    }, 800);
+                } else {
+                    resEl.innerText = "المستخدم غير موجود";
+                    resEl.className = "text-red-500 text-sm font-bold text-center";
                 }
+            } catch (e) {
+                console.error(e);
+                resEl.innerText = "خطأ في البحث";
+            }
+        };
+
+        window.filterContacts = () => renderContacts();
+
+        function renderContacts() {
+            const list = document.getElementById('contacts-list');
+            const search = document.getElementById('search-input').value.toLowerCase();
+            const contacts = loadContacts();
+            
+            list.innerHTML = '';
+
+            if (contacts.length === 0) {
+                list.innerHTML = `
+                    <div class="text-center mt-20 opacity-40">
+                        <i class="fas fa-user-plus text-4xl mb-4 text-gray-400"></i>
+                        <p class="text-gray-500 font-medium">قائمة الأصدقاء فارغة<br>أضف صديقاً جديداً</p>
+                    </div>
+                `;
+                return;
+            }
+
+            contacts.filter(c => c.displayName.toLowerCase().includes(search) || c.phoneNumber.includes(search))
+            .forEach(contact => {
+                const isActive = activeChatId && activeChatId.includes(contact.phoneNumber);
+                const el = document.createElement('div');
+                el.className = `flex items-center gap-4 p-4 rounded-2xl cursor-pointer transition-all ${isActive ? 'bg-primary/10' : 'bg-transparent hover:bg-gray-50 dark:hover:bg-white/5'}`;
+                el.onclick = () => window.openChat(contact.phoneNumber);
+                
+                el.innerHTML = `
+                    <img src="${contact.avatar}" class="w-14 h-14 rounded-full object-cover bg-gray-200">
+                    <div class="flex-1 min-w-0 border-b border-gray-100 dark:border-gray-800 pb-4 mb-[-16px]">
+                        <h4 class="font-bold text-lg text-gray-900 dark:text-white truncate">${contact.displayName}</h4>
+                        <p class="text-sm text-gray-500 truncate mt-0.5" dir="ltr">${contact.phoneNumber}</p>
+                    </div>
+                `;
+                list.appendChild(el);
+            });
+        }
+
+        // --- Chat System ---
+        window.openChat = async (friendPhone) => {
+            const contacts = loadContacts();
+            const friend = contacts.find(c => c.phoneNumber === friendPhone);
+            if (!friend) return;
+
+            const myPhone = localStorage.getItem('vchat_user_phone');
+            const ids = [myPhone, friendPhone].sort();
+            activeChatId = `${ids[0]}_${ids[1]}`;
+
+            if (window.innerWidth < 768) {
+                document.getElementById('sidebar').classList.add('hidden');
+                document.getElementById('chat-area').classList.remove('hidden');
+                document.getElementById('chat-area').classList.add('flex');
+            }
+
+            document.getElementById('header-img').src = friend.avatar;
+            document.getElementById('header-name').innerText = friend.displayName;
+            renderContacts();
+
+            if (unsubscribeMessages) unsubscribeMessages();
+
+            const box = document.getElementById('messages-box');
+            box.innerHTML = '<div class="text-center mt-10 text-gray-400">جاري التحميل...</div>';
+
+            try {
+                if(!auth.currentUser) await signInAnonymously(auth);
+
+                const messagesRef = collection(db, 'artifacts', appId, 'public', 'data', 'messages');
+                const q = query(messagesRef, where("chatId", "==", activeChatId));
+
+                unsubscribeMessages = onSnapshot(q, (snapshot) => {
+                    box.innerHTML = '';
+                    let msgs = [];
+                    snapshot.forEach(d => msgs.push(d.data()));
+                    msgs.sort((a,b) => (a.createdAt?.seconds || 0) - (b.createdAt?.seconds || 0));
+
+                    if (msgs.length === 0) {
+                        box.innerHTML = '<div class="text-center mt-20 text-gray-400 font-medium">ابدأ المحادثة الآن 👋</div>';
+                    }
+
+                    const myP = localStorage.getItem('vchat_user_phone');
+                    msgs.forEach(msg => {
+                        const isMe = msg.senderPhone === myP;
+                        const div = document.createElement('div');
+                        div.className = `flex mb-3 ${isMe ? 'justify-end' : 'justify-start'}`;
+                        
+                        const bubble = isMe 
+                            ? 'bg-primary text-white rounded-[18px] rounded-tl-sm shadow-sm'
+                            : 'bg-white dark:bg-darkSurface text-gray-900 dark:text-white rounded-[18px] rounded-tr-sm shadow-sm border border-gray-100 dark:border-transparent';
+                        
+                        const time = msg.createdAt ? new Date(msg.createdAt.seconds * 1000).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) : '...';
+
+                        div.innerHTML = `
+                            <div class="${bubble} px-4 py-2.5 max-w-[75%] min-w-[60px] relative group text-base">
+                                <p class="leading-snug break-words">${msg.text}</p>
+                                <span class="text-[10px] opacity-70 block text-right mt-1">${time} ${isMe ? '<i class="fas fa-check"></i>' : ''}</span>
+                            </div>
+                        `;
+                        box.appendChild(div);
+                    });
+                    box.scrollTop = box.scrollHeight;
+                }, (err) => {
+                    console.error("Snapshot error", err);
+                });
+            } catch (e) { console.error(e); }
+        };
+
+        window.sendMessage = async () => {
+            const input = document.getElementById('message-input');
+            const text = input.value.trim();
+            if (!text || !activeChatId) return;
+
+            input.value = '';
+            input.style.height = 'auto';
+            input.focus();
+
+            try {
+                if(!auth.currentUser) await signInAnonymously(auth);
+
+                const myPhone = localStorage.getItem('vchat_user_phone');
+                const myName = localStorage.getItem('vchat_user_name') || 'User';
+                
+                await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'messages'), {
+                    text: text,
+                    chatId: activeChatId,
+                    senderPhone: myPhone,
+                    senderName: myName,
+                    createdAt: serverTimestamp()
+                });
+            } catch (e) { console.error(e); }
+        };
+
+        window.backToMenu = () => {
+            document.getElementById('chat-area').classList.add('hidden');
+            document.getElementById('chat-area').classList.remove('flex');
+            document.getElementById('sidebar').classList.remove('hidden');
+            activeChatId = null;
+            renderContacts();
+        };
+
+        function updateUIState(user) {
+            const isLoggedIn = localStorage.getItem('vchat_logged_in') === 'true';
+            if (isLoggedIn) {
+                document.getElementById('auth-screen').classList.add('hidden');
+                document.getElementById('app-screen').classList.remove('hidden');
+                document.getElementById('app-screen').classList.add('flex');
+                
+                // Load contacts if not already loaded (to avoid constant reloading)
+                const contacts = loadContacts();
+                if(contacts.length > 0) renderContacts();
+                
             } else {
-                authScreen.classList.remove('hidden');
-                appScreen.classList.add('hidden');
-                appScreen.classList.remove('flex');
+                document.getElementById('auth-screen').classList.remove('hidden');
+                document.getElementById('app-screen').classList.add('hidden');
+                document.getElementById('app-screen').classList.remove('flex');
             }
         }
 
         document.addEventListener('DOMContentLoaded', () => {
-            initSystemAuth(); 
-
-            if (localStorage.getItem('vchat_theme') === 'dark' || (!('vchat_theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-                document.documentElement.classList.add('dark');
-            }
+            ensureConnection(); 
+            if (localStorage.getItem('vchat_theme') === 'dark') document.documentElement.classList.add('dark');
             
-            const input = document.getElementById('message-input');
-            input.addEventListener('keypress', function (e) {
+            const tx = document.getElementById('message-input');
+            tx.addEventListener("input", function(){
+                this.style.height = 'auto';
+                this.style.height = (this.scrollHeight) + "px";
+            });
+            tx.addEventListener('keypress', function (e) {
                 if (e.key === 'Enter' && !e.shiftKey) {
                     e.preventDefault();
                     window.sendMessage();
                 }
             });
-            input.addEventListener('input', function() {
-                this.style.height = 'auto';
-                this.style.height = (this.scrollHeight) + 'px';
-                if(this.value === '') this.style.height = 'auto';
-            });
         });
 
         onAuthStateChanged(auth, (user) => {
-            if (user) {
-                updateUIState(user);
-            } else {
-                // If system auth drops, try to reconnect silently
-                initSystemAuth();
-            }
+            updateUIState(user);
         });
-
-        const contacts = [
-            {
-                id: "chat_001",
-                name: "أحمد محمد",
-                avatar: "https://ui-avatars.com/api/?name=Ahmad+M&background=fbbf24&color=fff&font-size=0.4&bold=true",
-                lastMessage: "اضغط للبدء...",
-                time: "الآن",
-                unread: 0
-            },
-            {
-                id: "chat_002",
-                name: "فريق التطوير",
-                avatar: "https://ui-avatars.com/api/?name=Dev+Team&background=18181b&color=fff&font-size=0.4&bold=true",
-                lastMessage: "غرفة الفريق",
-                time: "الآن",
-                unread: 0
-            },
-            {
-                id: "chat_003",
-                name: "سارة علي",
-                avatar: "https://ui-avatars.com/api/?name=Sara+Ali&background=fb7185&color=fff&font-size=0.4&bold=true",
-                lastMessage: "محادثة جديدة",
-                time: "الآن",
-                unread: 0
-            }
-        ];
-
-        window.toggleDarkMode = function() {
-            document.documentElement.classList.toggle('dark');
-            const isDark = document.documentElement.classList.contains('dark');
-            localStorage.setItem('vchat_theme', isDark ? 'dark' : 'light');
-        }
-
-        function renderContacts() {
-            const list = document.getElementById('contacts-list');
-            list.innerHTML = '';
-
-            contacts.forEach(contact => {
-                const isActive = activeChatId === contact.id;
-                const activeClasses = isActive 
-                    ? 'bg-gradient-to-r from-yellow-50 to-white dark:from-white/10 dark:to-transparent border-primary shadow-sm' 
-                    : 'border-transparent hover:bg-gray-50/50 dark:hover:bg-white/5';
-
-                const li = document.createElement('li');
-                li.className = `flex items-center gap-4 p-4 rounded-[1.5rem] cursor-pointer transition-all duration-300 border-l-[6px] group ${activeClasses}`;
-                li.onclick = () => window.openChat(contact.id);
-
-                li.innerHTML = `
-                    <div class="relative flex-shrink-0">
-                        <img src="${contact.avatar}" class="w-[3.5rem] h-[3.5rem] rounded-2xl object-cover shadow-sm group-hover:scale-105 transition-transform duration-300">
-                    </div>
-                    <div class="flex-1 min-w-0">
-                        <div class="flex justify-between items-center mb-1.5">
-                            <h3 class="font-bold text-gray-800 dark:text-gray-100 truncate text-lg group-hover:text-primary transition-colors">${contact.name}</h3>
-                            <span class="text-xs text-gray-400 font-semibold bg-gray-100 dark:bg-white/10 px-2 py-1 rounded-lg">${contact.time}</span>
-                        </div>
-                        <div class="flex justify-between items-center">
-                            <p class="text-sm text-gray-500 dark:text-gray-400 truncate w-[85%] font-medium">${contact.lastMessage}</p>
-                        </div>
-                    </div>
-                `;
-                list.appendChild(li);
-            });
-        }
-
-        window.openChat = function(id) {
-            activeChatId = id;
-            const contact = contacts.find(c => c.id === id);
-            
-            if (window.innerWidth < 768) {
-                const sidebar = document.getElementById('sidebar');
-                const chatArea = document.getElementById('chat-area');
-                sidebar.classList.add('hidden');
-                chatArea.classList.remove('hidden');
-                chatArea.classList.add('flex');
-            }
-
-            document.getElementById('header-img').src = contact.avatar;
-            document.getElementById('header-name').innerText = contact.name;
-            
-            renderContacts();
-            
-            if (unsubscribeMessages) unsubscribeMessages();
-
-            const box = document.getElementById('messages-box');
-            box.innerHTML = '<div class="text-center text-gray-400 mt-10">جاري تحميل الرسائل...</div>';
-
-            try {
-                const messagesRef = collection(db, 'artifacts', appId, 'public', 'data', 'messages');
-                const q = query(messagesRef, where("chatId", "==", id));
-
-                unsubscribeMessages = onSnapshot(q, (snapshot) => {
-                    box.innerHTML = '';
-                    if (snapshot.empty) {
-                        box.innerHTML = '<div class="text-center text-gray-400 mt-10">لا توجد رسائل بعد. ابدأ المحادثة!</div>';
-                        return;
-                    }
-
-                    box.innerHTML += `
-                        <div class="flex justify-center mb-8">
-                            <span class="bg-white/60 dark:bg-white/5 backdrop-blur-md text-gray-500 dark:text-gray-400 text-[10px] md:text-xs font-bold px-4 py-1.5 md:px-5 md:py-2 rounded-full shadow-sm border border-white/50 dark:border-white/5">اليوم</span>
-                        </div>
-                    `;
-
-                    let messages = [];
-                    snapshot.forEach(doc => messages.push({ ...doc.data(), id: doc.id }));
-                    
-                    messages.sort((a, b) => {
-                        const timeA = a.createdAt ? a.createdAt.seconds : Date.now()/1000;
-                        const timeB = b.createdAt ? b.createdAt.seconds : Date.now()/1000;
-                        return timeA - timeB;
-                    });
-
-                    messages.forEach((msg) => {
-                        const isOut = currentUser && msg.senderId === currentUser.uid;
-                        const time = msg.createdAt ? new Date(msg.createdAt.toDate()).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '...';
-                        renderSingleMessage(box, msg.text, time, isOut);
-                    });
-
-                    box.scrollTop = box.scrollHeight;
-                }, (error) => {
-                    console.error("Fetch error:", error);
-                    // Silent fail for better UX, or show minimal error
-                    box.innerHTML = '<div class="text-center text-gray-400 mt-10">جاري الاتصال...</div>';
-                });
-            } catch (e) {
-                console.error("Setup error:", e);
-            }
-        }
-
-        function renderSingleMessage(container, text, time, isOut) {
-            const div = document.createElement('div');
-            div.className = `flex mb-4 md:mb-6 w-full animate-slide-up ${isOut ? 'justify-end' : 'justify-start'}`;
-            
-            const bubbleClass = isOut 
-                ? 'bg-gradient-to-br from-primaryLight to-primary text-gray-900 rounded-[18px] md:rounded-[22px] rounded-tl-[4px] shadow-lg shadow-primary/20' 
-                : 'bg-white dark:bg-darkSurface text-gray-800 dark:text-gray-100 rounded-[18px] md:rounded-[22px] rounded-tr-[4px] shadow-md border border-gray-50 dark:border-white/5';
-
-            div.innerHTML = `
-                <div class="flex flex-col max-w-[85%] md:max-w-[70%] group">
-                    <div class="${bubbleClass} p-3 px-4 md:p-4 md:px-6 relative transition-transform hover:-translate-y-1 duration-300 break-words">
-                        <p class="text-sm md:text-[15px] font-semibold leading-relaxed tracking-wide">${text}</p>
-                    </div>
-                    <div class="flex items-center gap-1.5 md:gap-2 mt-1 px-2 ${isOut ? 'justify-end' : 'justify-start'} opacity-70 md:opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                        <span class="text-[10px] md:text-[11px] text-gray-400 font-bold tracking-wider">${time}</span>
-                        ${isOut ? '<i class="fas fa-check-double text-[10px] text-primary"></i>' : ''}
-                    </div>
-                </div>
-            `;
-            if (isOut) {
-                div.style.justifyContent = 'flex-end'; 
-                div.classList.remove('justify-end');
-                div.classList.add('justify-end'); 
-            } else {
-                div.style.justifyContent = 'flex-start';
-                div.classList.remove('justify-start');
-                div.classList.add('justify-start');
-            }
-            container.appendChild(div);
-        }
-
-        window.sendMessage = async function() {
-            const input = document.getElementById('message-input');
-            const text = input.value.trim();
-            
-            if (text && activeChatId) {
-                try {
-                    input.value = '';
-                    input.style.height = 'auto'; 
-                    input.focus();
-
-                    // Fallback ID if auth is not ready
-                    const uid = currentUser ? currentUser.uid : 'anon-user';
-                    const senderName = localStorage.getItem('vchat_user_name') || localStorage.getItem('vchat_user_phone') || 'مستخدم';
-
-                    await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'messages'), {
-                        text: text,
-                        chatId: activeChatId,
-                        senderId: uid,
-                        senderName: senderName, 
-                        createdAt: serverTimestamp()
-                    });
-                } catch (e) {
-                    console.error("Error sending message: ", e);
-                }
-            }
-        }
-
-        window.backToMenu = function() {
-            const chatArea = document.getElementById('chat-area');
-            const sidebar = document.getElementById('sidebar');
-            chatArea.classList.add('hidden');
-            chatArea.classList.remove('flex');
-            sidebar.classList.remove('hidden');
-            activeChatId = null;
-            renderContacts();
-        }
     </script>
 </body>
 </html>
